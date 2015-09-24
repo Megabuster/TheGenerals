@@ -10,35 +10,24 @@ interface IState {
 
 module gameLogic {
 
-  /** Returns the initial TicTacToe board, which is a 3x3 matrix containing ''. */
+  /** Returns the initial Generals board, which is a 8x9 matrix containing ''. */
   export function getInitialBoard(): Board {
-    return [['', '', ''],
-            ['', '', ''],
-            ['', '', '']];
+    return [['', '', '', '', '', '', '', '', ''],
+            ['', '', '', '', '', '', '', '', ''],
+            ['', '', '', '', '', '', '', '', ''],
+            ['', '', '', '', '', '', '', '', ''],
+            ['', '', '', '', '', '', '', '', ''],
+            ['', '', '', '', '', '', '', '', ''],
+            ['', '', '', '', '', '', '', '', ''],
+            ['', '', '', '', '', '', '', '', '']];
   }
 
   /**
-   * Returns true if the game ended in a tie because there are no empty cells.
-   * E.g., isTie returns true for the following board:
-   *     [['X', 'O', 'X'],
-   *      ['X', 'O', 'O'],
-   *      ['O', 'X', 'X']]
+   *Ties do not exist in this game as it is always possible for one player's flag to be taken or to reach the enemy backline.
    */
-  function isTie(board: Board): boolean {
-    for (var i = 0; i < 3; i++) {
-      for (var j = 0; j < 3; j++) {
-        if (board[i][j] === '') {
-          // If there is an empty cell then we do not have a tie.
-          return false;
-        }
-      }
-    }
-    // No empty cells, so we have a tie!
-    return true;
-  }
 
   /**
-   * Return the winner (either 'X' or 'O') or '' if there is no winner.
+   * Return the winner (either 'white' or 'black')
    * The board is a matrix of size 3x3 containing either 'X', 'O', or ''.
    * E.g., getWinner returns 'X' for the following board:
    *     [['X', 'O', ''],
@@ -47,8 +36,8 @@ module gameLogic {
    */
   function getWinner(board: Board): string {
     var boardString = '';
-    for (var i = 0; i < 3; i++) {
-      for (var j = 0; j < 3; j++) {
+    for (var i = 0; i < 9; i++) {
+      for (var j = 0; j < 8; j++) {
         var cell = board[i][j];
         boardString += cell === '' ? ' ' : cell;
       }
