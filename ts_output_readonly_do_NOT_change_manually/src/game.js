@@ -70,7 +70,7 @@ var game;
             return;
         }
         try {
-            var move = gameLogic.createMove(state.board, row, col, turnIndex);
+            var move = gameLogic.createMove(state.board, turnIndex, deltaFrom, deltaTo);
             canMakeMove = false; // to prevent making another move
             gameService.makeMove(move);
         }
@@ -82,15 +82,15 @@ var game;
     game.cellClicked = cellClicked;
     function shouldShowImage(row, col) {
         var cell = state.board[row][col];
-        return cell !== "";
+        return cell.value !== 0;
     }
     game.shouldShowImage = shouldShowImage;
     function isPieceX(row, col) {
-        return state.board[row][col] === 'X';
+        return state.board[row][col].color === 'white';
     }
     game.isPieceX = isPieceX;
     function isPieceO(row, col) {
-        return state.board[row][col] === 'O';
+        return state.board[row][col].color === 'black';
     }
     game.isPieceO = isPieceO;
     function shouldSlowlyAppear(row, col) {

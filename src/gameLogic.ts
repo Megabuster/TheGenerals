@@ -33,6 +33,7 @@ interface piece {
   name: string;
   value: number;
   color: string;
+  promoted?: boolean;
 }
 module gameLogic {
   /*export const ROWS = 8;
@@ -191,23 +192,81 @@ module gameLogic {
        }
        return board;
   }
-  function setupInitialBoard(board: Board) {
+  //Notable clauses: white can only use rows (i) 5-7 while black can only use rows (i) 0-2
+  //Loops will work as such: each piece (from 1-30 in )
+  export function setupInitialBoard(board: Board): Board {
     /**
      *Let white place pieces first. All 21 pieces must be placed on the board.
      */
-    addToBoard()
     /**
      *Let black then add pieces before proceeding with the game (white's turn)
      */
-    return 0;
-  }//take the blank board from getInitialBoard()   }
-  function addToBoard(Board: Board, turnIndexOfMove: number, row: number, col: number) {
-    if(turnIndexOfMove === 0) {
-      for(let i=1; i<=15; i++) {
 
+     for (let i = 1; i < 16; i++) {
+       if(i===2) {
+         for (let j = 0; j < 6; j++) {
+
+         }
+       }
+       else if(i===15) {
+         for (let j = 0; j < 2; j++) {
+
+         }
+
+       }
+       else {
+
+       }
+     }
+     for (let i = 16; i < 31; i++) {
+       if(i===17) {
+         for (let j = 0; j < 6; j++) {
+           
+         }
+       }
+       else if(i===30) {
+         for (let j = 0; j < 2; j++) {
+
+         }
+       }
+       else {
+         board = addToBoard(board, 1, )
+       }
+     }
+
+    return board;
+  }//take the blank board from getInitialBoard()   }
+  export function addToBoard(
+    board: Board, turnIndexOfMove: number, row: number, col: number, pieceNo: number, color: string):IMove {
+      let newPiece: piece;
+      newPiece.value = pieceNo;
+      newPiece.name = getPieceName(pieceNo);
+      newPiece.color = color;
+      if(color === "white") {
+        if (row < 5 || row >= ROWS || col < 0 || col >= COLS) { //Make sure the attempted move is on the board
+          throw new Error("Place a piece on your three closest rows only!");
+        }
       }
+      else {
+        if (row > 2 || row < 0 || col < 0 || col >= COLS) { //Make sure the attempted move is on the board
+          throw new Error("Place a piece on your three closest rows only!");
+        }
+      }
+      if(board[row][col].color === color) {
+        throw new Error ("A piece was already placed there!");
+      }
+      var boardAfterMove = angular.copy(board);
+      //Add the new piece once we're sure there will be no issues
+      boardAfterMove[row][col].value = newPiece.value;
+      boardAfterMove[row][col].name = newPiece.name;
+      boardAfterMove[row][col].color = newPiece.color;
+
+      var firstOperation: IOperation;
+      let delta: BoardDelta = {row: row, col: col};
+      return [firstOperation,
+                {set: {key: 'board', value: boardAfterMove}},
+                {set: {key: 'delta', value: delta}}];
     }
-  }
   /**
    *
    */
@@ -244,35 +303,47 @@ module gameLogic {
    *      ['X', 'O', ''],
    *      ['X', '', '']]
    */
-  function getWinner(board: Board): string {
-    var boardString = '';
-    for (var i = 0; i < ROWS; i++) {
-      for (var j = 0; j < COLS; j++) {
-        var cell = board[i][j];
-        boardString += cell.name === '' ? ' ' : cell;
+  function getWinner(board: Board, turnIndexOfMove: number): string {
+    //If one player has no flag, the other one is the winner.
+    //Alternatively, if one player's flag is at the enemy backline and survived for one turn, that player wins
+    let whiteFlag: boolean = false;
+    let blackFlag: boolean = false;
+    for (let i = 0; i < ROWS; i++) {
+      for (let j = 0; j < COLS; j++) {
+        if(board[i][j].value === 1) {
+          if(turnIndexOfMove==0&&i==7) {
+            if(board[i][j].promoted === true) {
+              return "white";
+            }
+            else {
+              board[i][j].promoted = true;
+            }
+          }
+          whiteFlag = true;
+        }
+        else if(board[i][j].value === 16) {
+          if(turnIndexOfMove==0&&i==1) {
+            if(board[i][j].promoted === true) {
+              return "black";
+            }
+            else {
+              board[i][j].promoted = true;
+            }
+          }
+          blackFlag = true;
+        }
       }
     }
-    var win_patterns = [
-      'XXX......',
-      '...XXX...',
-      '......XXX',
-      'X..X..X..',
-      '.X..X..X.',
-      '..X..X..X',
-      'X...X...X',
-      '..X.X.X..'
-    ];
-    for (i = 0; i < win_patterns.length; i++) {
-      var win_pattern = win_patterns[i];
-      var x_regexp = new RegExp(win_pattern);
-      var o_regexp = new RegExp(win_pattern.replace(/X/g, 'O'));
-      if (x_regexp.test(boardString)) {
-        return 'X';
-      }
-      if (o_regexp.test(boardString)) {
-        return 'O';
-      }
+    if((whiteFlag !== true)&&(blackFlag !== true)) {
+      throw new Error("Both players have no flag currently!");
     }
+    else if(whiteFlag !== true) {
+      return "black";
+    }
+    else if(blackFlag !== true) {
+      return "white";
+    }
+    //if both flags were found without any other clause being fulfilled, no one has won yet
     return '';
   }
 
@@ -324,28 +395,33 @@ module gameLogic {
     if(board[deltaFrom.row][deltaFrom.col].color === board[deltaTo.row][deltaTo.col].color) {
       throw new Error ("Can't eat own player's piece!");
     }
-    if (getWinner(board) !== '') { //the game if over if a winner exists
+    if (getWinner(board, turnIndexBeforeMove) !== '') { //the game if over if a winner exists
       throw new Error("Can only make a move if the game is not over!");
     }
     var boardAfterMove = angular.copy(board);
     //Let the fight break out. The winning piece takes over the slot
-    let pieceAtSlot: piece;
-    pieceAtSlot.value = winningPiece(board[deltaFrom.row][deltaFrom.col].value, board[deltaTo.row][deltaTo.col].value);
+    boardAfterMove[deltaTo.row][deltaTo.col].value = winningPiece(board[deltaFrom.row][deltaFrom.col].value, board[deltaTo.row][deltaTo.col].value);
+    boardAfterMove[deltaTo.row][deltaTo.col].name = getPieceName(boardAfterMove[deltaTo.row][deltaTo.col].value);
+    boardAfterMove[deltaTo.row][deltaTo.col].color = getPieceColor(boardAfterMove[deltaTo.row][deltaTo.col].value);
     //Once the piece has moved, remove its occurrence from the previous state
-    boardAfterMove[deltaTo.row][deltaTo.col].color = turnIndexBeforeMove === 0 ? 'white' : 'black'; //replace this line accordingly
-    var winner = getWinner(boardAfterMove);
+    boardAfterMove[deltaFrom.row][deltaFrom.col].color = "gray";
+    boardAfterMove[deltaFrom.row][deltaFrom.col].name = "EMP";
+    boardAfterMove[deltaFrom.row][deltaFrom.col].value = 0;
+
+    var winner = getWinner(boardAfterMove, turnIndexBeforeMove);
     var firstOperation: IOperation;
-    if (winner !== '') { //removed instances of:  || isTie(boardAfterMove)
+    if (winner !== '') {
       // Game over.
       firstOperation = {endMatch: {endMatchScores: winner === 'white' ? [1, 0] : winner === 'black' ? [0, 1] : [0, 0]}};
     } else {
       // Game continues. Now it's the opponent's turn (the turn switches from 0 to 1 and 1 to 0).
       firstOperation = {setTurn: {turnIndex: 1 - turnIndexBeforeMove}};
     }
-    var delta: BoardDelta = {row: row, col: col};
+    //var delta: BoardDelta = {row: row, col: col};
     return [firstOperation,
-            {set: {key: 'board', value: boardAfterMove}},
-            {set: {key: 'delta', value: delta}}];
+              {set: {key: 'board', value: boardAfterMove}},
+              {set: {key: 'deltaFrom', value: {row: deltaFrom.row, col: deltaFrom.col}}},
+              {set: {key: 'deltaTo', value: {row: deltaTo.row, col: deltaTo.col}}}];
   }
 
   export function isMoveOk(params: IIsMoveOk): boolean {
@@ -363,11 +439,11 @@ module gameLogic {
       // [{setTurn: {turnIndex : 1},
       //  {set: {key: 'board', value: [['X', '', ''], ['', '', ''], ['', '', '']]}},
       //  {set: {key: 'delta', value: {row: 0, col: 0}}}]
-      var deltaValue: BoardDelta = move[2].set.value;
-      var row = deltaValue.row;
-      var col = deltaValue.col;
+      var deltaFrom: BoardDelta = move[2].set.value;
+      var deltaTo: BoardDelta = move[3].set.value;
+
       var board = stateBeforeMove.board;
-      var expectedMove = createMove(board, row, col, turnIndexBeforeMove);
+      var expectedMove = createMove(board, turnIndexBeforeMove, deltaFrom, deltaTo);
       if (!angular.equals(move, expectedMove)) {
         return false;
       }

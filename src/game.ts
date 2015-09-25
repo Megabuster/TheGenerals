@@ -76,7 +76,7 @@ module game {
       return;
     }
     try {
-      var move = gameLogic.createMove(state.board, row, col, turnIndex);
+      var move = gameLogic.createMove(state.board, turnIndex, deltaFrom, deltaTo);
       canMakeMove = false; // to prevent making another move
       gameService.makeMove(move);
     } catch (e) {
@@ -87,15 +87,15 @@ module game {
 
   export function shouldShowImage(row: number, col: number): boolean {
     var cell = state.board[row][col];
-    return cell !== "";
+    return cell.value !== 0;
   }
 
   export function isPieceX(row: number, col: number): boolean {
-    return state.board[row][col] === 'X';
+    return state.board[row][col].color === 'white';
   }
 
   export function isPieceO(row: number, col: number): boolean {
-    return state.board[row][col] === 'O';
+    return state.board[row][col].color === 'black';
   }
 
   export function shouldSlowlyAppear(row: number, col: number): boolean {
