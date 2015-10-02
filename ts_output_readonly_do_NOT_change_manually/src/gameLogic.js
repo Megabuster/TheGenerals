@@ -22,23 +22,6 @@ var gameLogic;
 (function (gameLogic) {
     gameLogic.ROWS = 8;
     gameLogic.COLS = 9;
-    /**
-     *This is to simplify fights. The winner of the fight, by number, is returned if it exists.
-     */
-    /*export function logDiffToConsole(o1:piece, o2:piece) {
-      if (angular.equals(o1, o2)) return;
-      console.log("Found diff between: ", o1, o2);
-      if (!angular.equals(Object.keys(o1), Object.keys(o2))) {
-        console.log("Keys different: ", Object.keys(o1.name), Object.keys(o2.name));
-      }
-    }*/
-    /*export function logCurrentBoard(board: Board) {
-      for (let i = 0; i < ROWS; i++) {
-        for (let j = 0; j < COLS; j++) {
-          console.log(board[i][j].name);
-       }
-      }
-    }*/
     function winningPiece(attacker, attacked) {
         console.log(attacker, attacked);
         if (attacker === 1 && attacked === 16) {
@@ -47,13 +30,13 @@ var gameLogic;
         else if (attacker === 16 && attacked === 1) {
             return 16;
         }
-        else if (attacker == 16 || attacked == 16) {
+        else if ((attacker === 16 || attacked === 16) && (attacker !== 0 || attacked !== 0)) {
             return Math.min(attacker, attacker);
         }
-        else if (attacker === 17 && attacked === 15 || attacker === 15 && attacked === 17) {
-            return 15;
+        else if (attacker === 2 && attacked === 30 || attacker === 30 && attacked === 2) {
+            return 2;
         }
-        else if ((attacker - attacked) === 15 || (attacked - attacker) === 15) {
+        else if (((attacker - attacked) === 15 || (attacked - attacker) === 15) && attacker !== 0 && attacked !== 0) {
             return 0;
         }
         else if (attacker > attacked) {
@@ -185,36 +168,37 @@ var gameLogic;
     gameLogic.setupInitialBoard = setupInitialBoard; //take the blank board from getInitialBoard()   }
     //
     function addToBoard(board, turnIndexOfMove, pieceNo) {
-        /*let newPiece: piece;
-        newPiece.value = pieceNo;
-        newPiece.name = getPieceName(pieceNo);*/
         if (pieceNo > 15) {
             //newPiece.color == "black";
             var completed = false;
             do {
                 var rowPos = Math.floor(Math.random() * 3);
-                var colPos = Math.floor(Math.random() * 9);
+                var colPos = Math.floor(Math.random() * 8);
+                //console.log("LOOP ATTEMPT", rowPos, colPos, pieceNo, board[rowPos][colPos].name);
                 if (board[rowPos][colPos].name === "EMP") {
                     //board[rowPos][colPos] == newPiece;
                     board[rowPos][colPos].name = getPieceName(pieceNo);
                     board[rowPos][colPos].value = pieceNo;
                     board[rowPos][colPos].color = "black";
+                    //console.log("added [row][col][pieceNo]", rowPos, colPos, pieceNo);
                     completed = true;
                 }
-            } while (completed = false);
+            } while (completed === false);
         }
         else {
             var completed = false;
             do {
                 var rowPos = (Math.floor(Math.random() * 3) + 5);
-                var colPos = Math.floor(Math.random() * 9);
+                var colPos = Math.floor(Math.random() * 8);
+                //console.log("LOOP ATTEMPT", rowPos, colPos, pieceNo, board[rowPos][colPos].name);
                 if (board[rowPos][colPos].name === "EMP") {
                     board[rowPos][colPos].name = getPieceName(pieceNo);
                     board[rowPos][colPos].value = pieceNo;
                     board[rowPos][colPos].color = "white";
+                    //console.log("added [row][col][pieceNo]", rowPos, colPos, pieceNo);
                     completed = true;
                 }
-            } while (completed = false);
+            } while (completed === false);
         }
         //Math.floor((Math.random() * 10) + 1)
         //logCurrentBoard(board);
@@ -273,7 +257,7 @@ var gameLogic;
     /**
      *Ties do not exist in this game as it is always possible for one player's flag to be taken or to reach the enemy backline.
      */
-    function getWinner(board, turnIndexOfMove) {
+    function getWinner(board, turnIndexOfMove, afterMove) {
         //If one player has no flag, the other one is the winner.
         //Alternatively, if one player's flag is at the enemy backline and survived for one turn, that player wins
         var whiteFlag = false;
@@ -281,25 +265,29 @@ var gameLogic;
         for (var i = 0; i < gameLogic.ROWS; i++) {
             for (var j = 0; j < gameLogic.COLS; j++) {
                 if (board[i][j].value === 1) {
-                    if (turnIndexOfMove == 1 && i == 0) {
+                    if (afterMove == true && i == 0) {
                         if (board[i][j].promoted === true) {
+                            console.log("go here");
                             return "white";
                         }
                         else {
                             board[i][j].promoted = true;
+                            console.log("come here", i, j);
                         }
                     }
                     whiteFlag = true;
                 }
                 else if (board[i][j].value === 16) {
-                    if (turnIndexOfMove == 0 && i === 7) {
+                    if (afterMove == true && i === 7) {
                         if (board[i][j].promoted === true) {
                             return "black";
                         }
                         else {
                             board[i][j].promoted = true;
+                            console.log("tis true");
                         }
                     }
+                    //console.log("black flag should be dead");
                     blackFlag = true;
                 }
             }
@@ -308,9 +296,11 @@ var gameLogic;
             throw new Error("Both players have no flag currently!");
         }
         else if (whiteFlag !== true) {
+            console.log("where my flag go");
             return "black";
         }
         else if (blackFlag !== true) {
+            console.log("black flag should be dead");
             return "white";
         }
         //if both flags were found without any other clause being fulfilled, no one has won yet
@@ -360,29 +350,32 @@ var gameLogic;
         if (board[deltaFrom.row][deltaFrom.col].color === board[deltaTo.row][deltaTo.col].color) {
             throw new Error("Can't eat own player's piece!");
         }
-        if (getWinner(board, turnIndexBeforeMove) !== '') {
+        if (getWinner(board, turnIndexBeforeMove, false) !== '') {
             throw new Error("Can only make a move if the game is not over!");
         }
         var boardAfterMove = angular.copy(board);
         //Let the fight break out. The winning piece takes over the slot
         boardAfterMove[deltaTo.row][deltaTo.col].value = winningPiece(board[deltaFrom.row][deltaFrom.col].value, board[deltaTo.row][deltaTo.col].value);
         boardAfterMove[deltaTo.row][deltaTo.col].name = getPieceName(boardAfterMove[deltaTo.row][deltaTo.col].value);
+        console.log("winning piece is: ", boardAfterMove[deltaTo.row][deltaTo.col].name);
         boardAfterMove[deltaTo.row][deltaTo.col].color = getPieceColor(boardAfterMove[deltaTo.row][deltaTo.col].value);
         //Once the piece has moved, remove its occurrence from the previous state
         boardAfterMove[deltaFrom.row][deltaFrom.col].color = "gray";
         boardAfterMove[deltaFrom.row][deltaFrom.col].name = "EMP";
         boardAfterMove[deltaFrom.row][deltaFrom.col].value = 0;
-        var winner = getWinner(boardAfterMove, (1 - turnIndexBeforeMove));
+        var winner = getWinner(boardAfterMove, (1 - turnIndexBeforeMove), true);
+        //console.log("the winner is ", winner);
         var firstOperation;
         if (winner !== '') {
             // Game over.
-            console.log(winner);
+            console.log("the winner is ", winner);
             firstOperation = { endMatch: { endMatchScores: winner === 'white' ? [1, 0] : winner === 'black' ? [0, 1] : [0, 0] } };
         }
         else {
             // Game continues. Now it's the opponent's turn (the turn switches from 0 to 1 and 1 to 0).
             firstOperation = { setTurn: { turnIndex: (1 - turnIndexBeforeMove) } };
         }
+        //firstOperation = {setTurn: {turnIndex: (1 - turnIndexBeforeMove) }};
         //let delta: BoardDelta = {row: row, col: col};
         return [firstOperation,
             { set: { key: 'board', value: boardAfterMove } },
@@ -404,12 +397,15 @@ var gameLogic;
             var deltaTo = move[3].set.value;
             var board = stateBeforeMove.board;
             var expectedMove = createMove(board, turnIndexBeforeMove, deltaFrom, deltaTo);
+            console.log(turnIndexBeforeMove, deltaFrom, deltaTo);
             if (!angular.equals(move, expectedMove)) {
+                //console.log("fails");
                 return false;
             }
         }
         catch (e) {
             // if there are any exceptions then the move is illegal
+            console.log("throws");
             return false;
         }
         return true;
