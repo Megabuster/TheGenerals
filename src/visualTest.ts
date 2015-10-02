@@ -193,8 +193,29 @@ export function createMove(
     boardAfterMove[deltaTo.row][deltaTo.col].name =
     boardAfterMove[deltaTo.row][deltaTo.col].color =
 
-    var delta: BoardDelta = {row: row, col: col};
+    let delta: BoardDelta = {row: row, col: col};
     return [firstOperation,
               {set: {key: 'board', value: boardAfterMove}},
               {set: {key: 'delta', value: delta}}];
   }
+  -----------------------------------------------------------------
+  expectMoveOk(1, { board:
+    [['BFL','BSP','BPR','BPR','BPR','BPR','BPR','B3S',''],
+    ['B1L','B1S','BMA','B5S','BCA','BSE','B2S','B4S',''],
+    ['B2L','BCO','BLC','BSP','BPR','','','',''],
+    ['','','','','','','','',''],
+    ['','','','','','','','',''],
+    ['WPR','WPR','WPR','WPR','WPR','WPR','WSP','W3S',''],
+    ['W1L','W1S','WMA','W5S','WCA','','','',''],
+    ['W2L','WCO','WLC','WSP','WFL','','WSE','W2S','W4S']]},
+    [{setTurn: {turnIndex : 0}},
+      {set: {key: 'board', value:
+        [['BFL','BSP','BPR','BPR','BPR','BPR','BPR','B3S',''],
+        ['B1L','B1S','BMA','B5S','BCA','BSE','B2S','B4S',''],
+        ['B2L','BCO','BLC','BSP','BPR','','','',''],
+        ['','','','','','','','',''],
+        ['','','WPR','','','','','',''],
+        ['WPR','WPR','','WPR','WPR','WPR','WSP','W3S',''],
+        ['W1L','W1S','WMA','W5S','WCA','','','',''],
+        ['W2L','WCO','WLC','WSP','WFL','','WSE','W2S','W4S']]}},
+      {set: {key: 'delta', value: {row: 0, col: 0}}}]);

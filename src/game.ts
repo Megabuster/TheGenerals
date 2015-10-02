@@ -76,7 +76,7 @@ module game {
       return;
     }
     try {
-      var move = gameLogic.createMove(state.board, turnIndex, deltaFrom, deltaTo);
+      var move = gameLogic.createMove(state.board, turnIndex, row, col);
       canMakeMove = false; // to prevent making another move
       gameService.makeMove(move);
     } catch (e) {
