@@ -34,9 +34,7 @@ module game {
 
   function sendComputerMove() {
     gameService.makeMove(
-        aiService.createComputerMove(state.board, turnIndex,
-          // at most 1 second for the AI to choose a move (but might be much quicker)
-          {millisecondsLimit: 1000}));
+        aiService.createComputerMove(state.board, turnIndex));
   }
 
   function updateUI(params: IUpdateUI): void {
@@ -105,7 +103,7 @@ module game {
   }
 }
 
-angular.module('myApp', ['ngTouch', 'ui.bootstrap'])
+angular.module('myApp', ['ngTouch', 'ui.bootstrap', 'gameServices'])
   .run(['initGameServices', function (initGameServices: any) {
   $rootScope['game'] = game;
   translate.setLanguage('en',  {

@@ -65,10 +65,10 @@ interface IUpdateUI extends IIsMoveOk {
   endMatchScores?: number[];
 }
 interface IGame {
-  isMoveOk(move: IIsMoveOk): boolean;
-  updateUI(update: IUpdateUI): void;
   minNumberOfPlayers: number;
   maxNumberOfPlayers: number;
+  isMoveOk(move: IIsMoveOk): boolean;
+  updateUI(update: IUpdateUI): void;
 }
 interface IGameService {
   setGame(game: IGame): void;

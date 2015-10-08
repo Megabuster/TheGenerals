@@ -31,9 +31,7 @@ var game;
         });
     }
     function sendComputerMove() {
-        gameService.makeMove(aiService.createComputerMove(state.board, turnIndex, 
-        // at most 1 second for the AI to choose a move (but might be much quicker)
-        { millisecondsLimit: 1000 }));
+        gameService.makeMove(aiService.createComputerMove(state.board, turnIndex));
     }
     function updateUI(params) {
         animationEnded = false;
@@ -100,7 +98,7 @@ var game;
     }
     game.shouldSlowlyAppear = shouldSlowlyAppear;
 })(game || (game = {}));
-angular.module('myApp', ['ngTouch', 'ui.bootstrap'])
+angular.module('myApp', ['ngTouch', 'ui.bootstrap', 'gameServices'])
     .run(['initGameServices', function (initGameServices) {
         $rootScope['game'] = game;
         translate.setLanguage('en', {

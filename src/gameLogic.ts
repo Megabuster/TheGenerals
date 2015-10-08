@@ -275,7 +275,7 @@ module gameLogic {
    *Ties do not exist in this game as it is always possible for one player's flag to be taken or to reach the enemy backline.
    */
 
-  function getWinner(board: Board, turnIndexOfMove: number, afterMove: boolean): string {
+  export function getWinner(board: Board, turnIndexOfMove: number, afterMove: boolean): string {
     //If one player has no flag, the other one is the winner.
     //Alternatively, if one player's flag is at the enemy backline and survived for one turn, that player wins
     let whiteFlag: boolean = false;

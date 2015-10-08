@@ -306,6 +306,7 @@ var gameLogic;
         //if both flags were found without any other clause being fulfilled, no one has won yet
         return '';
     }
+    gameLogic.getWinner = getWinner;
     /**
      * Returns all the possible moves for the given board and turnIndexBeforeMove.
      * Returns an empty array if the game is over.
