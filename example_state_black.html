@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html ng-app="myApp">
+
+    <head>
+        <meta charset="utf-8">
+        <title>TheGenerals</title>
+        <meta name="description" content="TheGenerals game">
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+        <link rel="stylesheet" type="text/css" href="http://yoav-zibin.github.io/emulator/main.css">
+        <link rel="stylesheet" type="text/css" href="game.css">
+        <!-- Loading code to resize gameArea according to some chosen width-to-height ratio. In TheGenerals, the ratio is 1 (i.e., width/height=1 ) -->
+        <script crossorigin="anonymous" src="http://ajax.googleapis.com/ajax/libs/angularjs/1.3.8/angular.js"></script>
+        <script crossorigin="anonymous" src="http://yoav-zibin.github.io/emulator/dist/turnBasedServices.3.js"></script>
+        <script>
+            angular.module('myApp', []).run(function() {
+                resizeGameAreaService.setWidthToHeight(1);
+            });
+        </script>
+    </head>
+
+    <body>
+        <div id="gameArea">
+            <!-- First row: -->
+            <div style="position:absolute; top:0%; left:0; width:100%; height:12.5%;">
+                <div style="position:absolute; top:0; left:0%; width:12%; height:100%;" class="l t">
+                    <div style="width:100%; height: 100%" class="BPR"></div>
+                </div>
+                <div style="position:absolute; top:0; left:12.5%; width:12%; height:100%;" class="l t">
+                    <div style="width:100%; height: 100%" class="BFL"></div>
+                </div>
+                <div style="position:absolute; top:0; left:25%; width:12%; height:100%;" class="l t">
+                    <div style="width:100%; height: 100%" class="empty"></div>
+                </div>
+                <div style="position:absolute; top:0; left:37.5%; width:12%; height:100%;" class="l t">
+                    <div style="width:100%; height: 100%" class="BLC"></div>
+                </div>
+                <div style="position:absolute; top:0; left:50%; width:12%; height:100%;" class="l t">
+                    <div style="width:100%; height: 100%" class="BSP"></div>
+                </div>
+                <div style="position:absolute; top:0; left:62.5%; width:12%; height:100%;" class="l t">
+                    <div style="width:100%; height: 100%" class="BPR"></div>
+                </div>
+                <div style="position:absolute; top:0; left:75%; width:12%; height:100%;" class="l t">
+                    <div style="width:100%; height: 100%" class="BS1"></div>
+                </div>
+                <div style="position:absolute; top:0; left:87.5%; width:12%; height:100%;" class="l t">
+                    <div style="width:100%; height: 100%" class="BS3"></div>
+                </div>
+                <div style="position:absolute; top:0; left:100%; width:12%; height:100%;" class="l t r">
+                    <div style="width:100%; height: 100%" class="BMA"></div>
+                </div>
+            </div>
+            <!-- Second row: -->
+            <div style="position:absolute; top:12.5%; left:0; width:100%; height:12.5%;">
+                <div style="position:absolute; top:0; left:0%; width:12%; height:100%;" class="l t">
+                    <div style="width:100%; height: 100%" class="empty"></div>
+                </div>
+                <div style="position:absolute; top:0; left:12.5%; width:12%; height:100%;" class="l t">
+                    <div style="width:100%; height: 100%" class="BS2"></div>
+                </div>
+                <div style="position:absolute; top:0; left:25%; width:12%; height:100%;" class="l t">
+                    <div style="width:100%; height: 100%" class="BCO"></div>
+                </div>
+                <div style="position:absolute; top:0; left:37.5%; width:12%; height:100%;" class="l t">
+                    <div style="width:100%; height: 100%" class="BPR"></div>
+                </div>
+                <div style="position:absolute; top:0; left:50%; width:12%; height:100%;" class="l t">
+                    <div style="width:100%; height: 100%" class="BCA"></div>
+                </div>
+                <div style="position:absolute; top:0; left:62.5%; width:12%; height:100%;" class="l t">
+                    <div style="width:100%; height: 100%" class="empty"></div>
+                </div>
+                <div style="position:absolute; top:0; left:75%; width:12%; height:100%;" class="l t">
+                    <div style="width:100%; height: 100%" class="BPR"></div>
+                </div>
+                <div style="position:absolute; top:0; left:87.5%; width:12%; height:100%;" class="l t">
+                    <div style="width:100%; height: 100%" class="empty"></div>
+                </div>
+                <div style="position:absolute; top:0; left:100%; width:12%; height:100%;" class="l t r">
+                    <div style="width:100%; height: 100%" class="BS5"></div>
+                </div>
+            </div>
+            <!-- Third row: -->
+            <div style="position:absolute; top:25%; left:0; width:100%; height:12.5%;">
+                <div style="position:absolute; top:0; left:0%; width:12%; height:100%;" class="l t">
+                    <div style="width:100%; height: 100%" class="BPR"></div>
+                </div>
+                <div style="position:absolute; top:0; left:12.5%; width:12%; height:100%;" class="l t">
+                    <div style="width:100%; height: 100%" class="BSP"></div>
+                </div>
+                <div style="position:absolute; top:0; left:25%; width:12%; height:100%;" class="l t">
+                    <div style="width:100%; height: 100%" class="empty"></div>
+                </div>
+                <div style="position:absolute; top:0; left:37.5%; width:12%; height:100%;" class="l t">
+                    <div style="width:100%; height: 100%" class="BPR"></div>
+                </div>
+                <div style="position:absolute; top:0; left:50%; width:12%; height:100%;" class="l t">
+                    <div style="width:100%; height: 100%" class="empty"></div>
+                </div>
+                <div style="position:absolute; top:0; left:62.5%; width:12%; height:100%;" class="l t">
+                    <div style="width:100%; height: 100%" class="empty"></div>
+                </div>
+                <div style="position:absolute; top:0; left:75%; width:12%; height:100%;" class="l t">
+                    <div style="width:100%; height: 100%" class="BL2"></div>
+                </div>
+                <div style="position:absolute; top:0; left:87.5%; width:12%; height:100%;" class="l t">
+                    <div style="width:100%; height: 100%" class="empty"></div>
+                </div>
+                <div style="position:absolute; top:0; left:100%; width:12%; height:100%;" class="l t r">
+                    <div style="width:100%; height: 100%" class="empty"></div>
+                </div>
+            </div>
+            <!-- Fourth row: -->
+            <div style="position:absolute; top:37.5%; left:0; width:100%; height:12.5%;">
+                <div style="position:absolute; top:0; left:0%; width:12%; height:100%;" class="l t">
+                    <div style="width:100%; height: 100%" class="empty"></div>
+                </div>
+                <div style="position:absolute; top:0; left:12.5%; width:12%; height:100%;" class="l t">
+                    <div style="width:100%; height: 100%" class="BS4"></div>
+                </div>
+                <div style="position:absolute; top:0; left:25%; width:12%; height:100%;" class="l t">
+                    <div style="width:100%; height: 100%" class="BL1"></div>
+                </div>
+                <div style="position:absolute; top:0; left:37.5%; width:12%; height:100%;" class="l t">
+                    <div style="width:100%; height: 100%" class="BSE"></div>
+                </div>
+                <div style="position:absolute; top:0; left:50%; width:12%; height:100%;" class="l t">
+                    <div style="width:100%; height: 100%" class="empty"></div>
+                </div>
+                <div style="position:absolute; top:0; left:62.5%; width:12%; height:100%;" class="l t">
+                    <div style="width:100%; height: 100%" class="empty"></div>
+                </div>
+                <div style="position:absolute; top:0; left:75%; width:12%; height:100%;" class="l t">
+                    <div style="width:100%; height: 100%" class="empty"></div>
+                </div>
+                <div style="position:absolute; top:0; left:87.5%; width:12%; height:100%;" class="l t">
+                    <div style="width:100%; height: 100%" class="empty"></div>
+                </div>
+                <div style="position:absolute; top:0; left:100%; width:12%; height:100%;" class="l t r">
+                    <div style="width:100%; height: 100%" class="white"></div>
+                </div>
+            </div>
+            <!-- Fifth row: -->
+            <div style="position:absolute; top:50%; left:0; width:100%; height:12.5%;">
+                <div style="position:absolute; top:0; left:0%; width:12%; height:100%;" class="l t">
+                    <div style="width:100%; height: 100%" class="empty"></div>
+                </div>
+                <div style="position:absolute; top:0; left:12.5%; width:12%; height:100%;" class="l t">
+                    <div style="width:100%; height: 100%" class="empty"></div>
+                </div>
+                <div style="position:absolute; top:0; left:25%; width:12%; height:100%;" class="l t">
+                    <div style="width:100%; height: 100%" class="empty"></div>
+                </div>
+                <div style="position:absolute; top:0; left:37.5%; width:12%; height:100%;" class="l t">
+                    <div style="width:100%; height: 100%" class="empty"></div>
+                </div>
+                <div style="position:absolute; top:0; left:50%; width:12%; height:100%;" class="l t">
+                    <div style="width:100%; height: 100%" class="white"></div>
+                </div>
+                <div style="position:absolute; top:0; left:62.5%; width:12%; height:100%;" class="l t">
+                    <div style="width:100%; height: 100%" class="empty"></div>
+                </div>
+                <div style="position:absolute; top:0; left:75%; width:12%; height:100%;" class="l t">
+                    <div style="width:100%; height: 100%" class="white"></div>
+                </div>
+                <div style="position:absolute; top:0; left:87.5%; width:12%; height:100%;" class="l t">
+                    <div style="width:100%; height: 100%" class="white"></div>
+                </div>
+                <div style="position:absolute; top:0; left:100%; width:12%; height:100%;" class="l t r">
+                    <div style="width:100%; height: 100%" class="empty"></div>
+                </div>
+            </div>
+            <!-- Sixth row: -->
+            <div style="position:absolute; top:62.5%; left:0; width:100%; height:12.5%;">
+                <div style="position:absolute; top:0; left:0%; width:12%; height:100%;" class="l t">
+                    <div style="width:100%; height: 100%" class="empty"></div>
+                </div>
+                <div style="position:absolute; top:0; left:12.5%; width:12%; height:100%;" class="l t">
+                    <div style="width:100%; height: 100%" class="white"></div>
+                </div>
+                <div style="position:absolute; top:0; left:25%; width:12%; height:100%;" class="l t">
+                    <div style="width:100%; height: 100%" class="empty"></div>
+                </div>
+                <div style="position:absolute; top:0; left:37.5%; width:12%; height:100%;" class="l t">
+                    <div style="width:100%; height: 100%" class="empty"></div>
+                </div>
+                <div style="position:absolute; top:0; left:50%; width:12%; height:100%;" class="l t">
+                    <div style="width:100%; height: 100%" class="empty"></div>
+                </div>
+                <div style="position:absolute; top:0; left:62.5%; width:12%; height:100%;" class="l t">
+                    <div style="width:100%; height: 100%" class="white"></div>
+                </div>
+                <div style="position:absolute; top:0; left:75%; width:12%; height:100%;" class="l t">
+                    <div style="width:100%; height: 100%" class="empty"></div>
+                </div>
+                <div style="position:absolute; top:0; left:87.5%; width:12%; height:100%;" class="l t">
+                    <div style="width:100%; height: 100%" class="empty"></div>
+                </div>
+                <div style="position:absolute; top:0; left:100%; width:12%; height:100%;" class="l t r">
+                    <div style="width:100%; height: 100%" class="empty"></div>
+                </div>
+            </div>
+            <!-- Seventh row: -->
+            <div style="position:absolute; top:75%; left:0; width:100%; height:12.5%;">
+                <div style="position:absolute; top:0; left:0%; width:12%; height:100%;" class="l t">
+                    <div style="width:100%; height: 100%" class="white"></div>
+                </div>
+                <div style="position:absolute; top:0; left:12.5%; width:12%; height:100%;" class="l t">
+                    <div style="width:100%; height: 100%" class="empty"></div>
+                </div>
+                <div style="position:absolute; top:0; left:25%; width:12%; height:100%;" class="l t">
+                    <div style="width:100%; height: 100%" class="empty"></div>
+                </div>
+                <div style="position:absolute; top:0; left:37.5%; width:12%; height:100%;" class="l t">
+                    <div style="width:100%; height: 100%" class="white"></div>
+                </div>
+                <div style="position:absolute; top:0; left:50%; width:12%; height:100%;" class="l t">
+                    <div style="width:100%; height: 100%" class="white"></div>
+                </div>
+                <div style="position:absolute; top:0; left:62.5%; width:12%; height:100%;" class="l t">
+                    <div style="width:100%; height: 100%" class="empty"></div>
+                </div>
+                <div style="position:absolute; top:0; left:75%; width:12%; height:100%;" class="l t">
+                    <div style="width:100%; height: 100%" class="white"></div>
+                </div>
+                <div style="position:absolute; top:0; left:87.5%; width:12%; height:100%;" class="l t">
+                    <div style="width:100%; height: 100%" class="empty"></div>
+                </div>
+                <div style="position:absolute; top:0; left:100%; width:12%; height:100%;" class="l t r">
+                    <div style="width:100%; height: 100%" class="white"></div>
+                </div>
+            </div>
+            <!-- Eighth row: -->
+            <div style="position:absolute; top:87.5%; left:0; width:100%; height:12.5%;">
+                <div style="position:absolute; top:0; left:0%; width:12%; height:100%;" class="l t b">
+                    <div style="width:100%; height: 100%" class="empty"></div>
+                </div>
+                <div style="position:absolute; top:0; left:12.5%; width:12%; height:100%;" class="l t b">
+                    <div style="width:100%; height: 100%" class="white"></div>
+                </div>
+                <div style="position:absolute; top:0; left:25%; width:12%; height:100%;" class="l t b">
+                    <div style="width:100%; height: 100%" class="white"></div>
+                </div>
+                <div style="position:absolute; top:0; left:37.5%; width:12%; height:100%;" class="l t b">
+                    <div style="width:100%; height: 100%" class="empty"></div>
+                </div>
+                <div style="position:absolute; top:0; left:50%; width:12%; height:100%;" class="l t b">
+                    <div style="width:100%; height: 100%" class="white"></div>
+                </div>
+                <div style="position:absolute; top:0; left:62.5%; width:12%; height:100%;" class="l t b">
+                    <div style="width:100%; height: 100%" class="white"></div>
+                </div>
+                <div style="position:absolute; top:0; left:75%; width:12%; height:100%;" class="l t b">
+                    <div style="width:100%; height: 100%" class="white"></div>
+                </div>
+                <div style="position:absolute; top:0; left:87.5%; width:12%; height:100%;" class="l t b">
+                    <div style="width:100%; height: 100%" class="white"></div>
+                </div>
+                <div style="position:absolute; top:0; left:100%; width:12%; height:100%;" class="l t r b">
+                    <div style="width:100%; height: 100%" class="white"></div>
+                </div>
+            </div>
+        </div>
+    </body>
+
+</html>
