@@ -5,6 +5,8 @@ var game;
     var isComputerTurn = false;
     var state = null;
     var turnIndex = null;
+    game.deltaFromSet = false;
+    game.currentDeltaFrom = { row: 0, col: 0 };
     game.isHelpModalShown = false;
     function init() {
         console.log("Translation of 'RULES_OF_TICTACTOE' is " + translate('RULES_OF_TICTACTOE'));
@@ -31,14 +33,18 @@ var game;
         });
     }
     function sendComputerMove() {
-        gameService.makeMove(aiService.createComputerMove(state.board, turnIndex));
+        gameService.makeMove(aiService.createComputerMove(state.board, turnIndex, { maxDepth: 1 }));
     }
     function updateUI(params) {
         animationEnded = false;
         state = params.stateAfterMove;
+        //$rootScope.state = state;
+        console.log("test updateUI");
         if (!state.board) {
+            console.log("test appear once");
             state.board = gameLogic.getInitialBoard();
         }
+        gameLogic.showBoardConsole(state.board);
         canMakeMove = params.turnIndexAfterMove >= 0 &&
             params.yourPlayerIndex === params.turnIndexAfterMove; // it's my turn
         turnIndex = params.turnIndexAfterMove;
@@ -59,6 +65,29 @@ var game;
             }
         }
     }
+    function myPiece(row, col, playerId) {
+        var myColor = " ";
+        if (playerId === 0) {
+            myColor = "white";
+        }
+        else if (playerId === 1) {
+            myColor = "black";
+        }
+        else {
+            console.log("Illegal player ID");
+        }
+        if (state.board[row][col].color !== myColor) {
+            console.log("Not your piece to move");
+            return false;
+        }
+        var possibleMoves = gameLogic.getPossibleMoves(state.board, playerId);
+        if (possibleMoves.length == 0) {
+            console.log("You have nowhere to move that piece");
+            return false;
+        }
+        console.log("You can move the piece from ", row, col, "player ", playerId);
+        return true;
+    }
     function cellClicked(row, col) {
         log.info(["Clicked on cell:", row, col]);
         if (window.location.search === '?throwException') {
@@ -67,45 +96,45 @@ var game;
         if (!canMakeMove) {
             return;
         }
-        try {
-            var move = gameLogic.createMove(state.board, turnIndex, row, col);
+        //try {
+        if (game.deltaFromSet === false && myPiece(row, col, turnIndex) == true) {
+            console.log("Able to make move from location");
+            game.currentDeltaFrom.row = row;
+            game.currentDeltaFrom.col = col;
+            game.deltaFromSet = true;
+        }
+        else if (game.deltaFromSet === true) {
+            console.log("deltaFrom is currently: ", game.currentDeltaFrom.row, game.currentDeltaFrom.col);
+            var move = gameLogic.createMove(state.board, turnIndex, game.currentDeltaFrom, { row: row, col: col });
             canMakeMove = false; // to prevent making another move
+            game.deltaFromSet = false;
             gameService.makeMove(move);
+            console.log("made move to: ", row, col);
         }
-        catch (e) {
-            log.info(["Cell is already full in position:", row, col]);
-            return;
-        }
+        //} catch (e) {
+        //log.info(["Caught cell click error"]);
+        //return;
+        //}
     }
     game.cellClicked = cellClicked;
     function shouldShowImage(row, col) {
         var cell = state.board[row][col];
-        return cell.value !== 0;
+        //return cell.value !== 0;
+        return getPiece(cell.value);
     }
     game.shouldShowImage = shouldShowImage;
-    function isPieceX(row, col) {
-        return state.board[row][col].color === 'white';
+    function getPiece(piece) {
+        return 'imgs/' + gameLogic.getPieceName(piece) + '.png';
     }
-    game.isPieceX = isPieceX;
-    function isPieceO(row, col) {
-        return state.board[row][col].color === 'black';
-    }
-    game.isPieceO = isPieceO;
-    function shouldSlowlyAppear(row, col) {
-        return !animationEnded &&
-            state.delta &&
-            state.delta.row === row && state.delta.col === col;
-    }
-    game.shouldSlowlyAppear = shouldSlowlyAppear;
 })(game || (game = {}));
 angular.module('myApp', ['ngTouch', 'ui.bootstrap', 'gameServices'])
-    .run(['initGameServices', function (initGameServices) {
-        $rootScope['game'] = game;
-        translate.setLanguage('en', {
-            RULES_OF_TICTACTOE: "Rules of TicTacToe",
-            RULES_SLIDE1: "You and your opponent take turns to mark the grid in an empty spot. The first mark is X, then O, then X, then O, etc.",
-            RULES_SLIDE2: "The first to mark a whole row, column or diagonal wins.",
-            CLOSE: "Close"
-        });
-        game.init();
-    }]);
+    .run(function () {
+    $rootScope['game'] = game;
+    translate.setLanguage('en', {
+        RULES_OF_TICTACTOE: "Rules of TicTacToe",
+        RULES_SLIDE1: "You and your opponent take turns to mark the grid in an empty spot. The first mark is X, then O, then X, then O, etc.",
+        RULES_SLIDE2: "The first to mark a whole row, column or diagonal wins.",
+        CLOSE: "Close"
+    });
+    game.init();
+}); //]

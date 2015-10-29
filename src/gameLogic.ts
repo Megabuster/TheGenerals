@@ -42,7 +42,7 @@ module gameLogic {
   export const COLS = 9;
 
   export function winningPiece(attacker: number, attacked: number) {
-    console.log(attacker, attacked);
+    //console.log(attacker, attacked);
     if(attacker===1&&attacked===16) {
       return 1;
     }
@@ -137,7 +137,7 @@ module gameLogic {
            board[i][j] = {name: "EMP", value: 0, color: "gray"};
          }
        }
-
+console.log("test appear once");
        return setupInitialBoard(board);
   }
   //Notable clauses: white can only use rows (i) 5-7 while black can only use rows (i) 0-2
@@ -149,7 +149,6 @@ module gameLogic {
     /**
      *Let black then add pieces before proceeding with the game (white's turn)
      */
-
      for (let i = 1; i < 16; i++) {
        if(i===2) {
          for (let j = 0; j < 6; j++) {
@@ -182,7 +181,7 @@ module gameLogic {
      }
     //logCurrentBoard(board);
     return board;
-  }//take the blank board from getInitialBoard()   }
+  }
   //
   export function addToBoard(board: Board, turnIndexOfMove: number, pieceNo: number) : Board {
     if (pieceNo > 15) {
@@ -190,7 +189,7 @@ module gameLogic {
       let completed: boolean = false;
       do {
         let rowPos: number = Math.floor(Math.random() * 3);
-        let colPos: number = Math.floor(Math.random() * 8);
+        let colPos: number = Math.floor(Math.random() * 9);
         //console.log("LOOP ATTEMPT", rowPos, colPos, pieceNo, board[rowPos][colPos].name);
         if(board[rowPos][colPos].name === "EMP") {
           //board[rowPos][colPos] == newPiece;
@@ -206,7 +205,7 @@ module gameLogic {
       let completed: boolean = false;
       do {
         let rowPos: number = (Math.floor(Math.random() * 3)+5);
-        let colPos: number = Math.floor(Math.random() * 8);
+        let colPos: number = Math.floor(Math.random() * 9);
         //console.log("LOOP ATTEMPT", rowPos, colPos, pieceNo, board[rowPos][colPos].name);
         if(board[rowPos][colPos].name === "EMP") {
           board[rowPos][colPos].name = getPieceName(pieceNo);
@@ -221,65 +220,28 @@ module gameLogic {
     //logCurrentBoard(board);
     return board;
   }
-  /*export function addToBoard(
-    board: Board, turnIndexOfMove: number, row: number, col: number, pieceNo: number, color: string):IMove {
-      let newPiece: piece;
-      newPiece.value = pieceNo;
-      newPiece.name = getPieceName(pieceNo);
-      newPiece.color = color;
-      if(color === "white") {
-        if (row < 5 || row >= ROWS || col < 0 || col >= COLS) { //Make sure the attempted move is on the board
-          throw new Error("Place a piece on your three closest rows only!");
-        }
-      }
-      else {
-        if (row > 2 || row < 0 || col < 0 || col >= COLS) { //Make sure the attempted move is on the board
-          throw new Error("Place a piece on your three closest rows only!");
-        }
-      }
-      if(board[row][col].color === color) {
-        throw new Error ("A piece was already placed there!");
-      }
-      let boardAfterMove = angular.copy(board);
-      //Add the new piece once we're sure there will be no issues
-      boardAfterMove[row][col].value = newPiece.value;
-      boardAfterMove[row][col].name = newPiece.name;
-      boardAfterMove[row][col].color = newPiece.color;
-
-      let firstOperation: IOperation;
-      let delta: BoardDelta = {row: row, col: col};
-      return [firstOperation,
-                {set: {key: 'board', value: boardAfterMove}},
-                {set: {key: 'delta', value: delta}}];
-    }*/
-  /**
-   *
-   */
-   //This tabulates all available slots to load a new piece. Treat this like making a new move, but swap the pieces if one already exists there?
-  /*export function getAvailablePositions(board: Board, turnIndexBeforeMove: number): IMove[] {
-    let possibleMoves: IMove[] = [];
+  //Display current board configuration within the console
+  export function showBoardConsole(board: Board) {
+    console.log("Displaying board layout");
     for (let i = 0; i < ROWS; i++) {
+      let rowName: string = "";
       for (let j = 0; j < COLS; j++) {
-        try {
-          //possibleMoves.push(createMove(board, i, j, turnIndexBeforeMove));
-        } catch (e) {
-
-          // The cell in that position was full.
-        }
+        let pieceName: string = board[i][j].name;
+        rowName+=pieceName + " ";
       }
+      console.log(rowName);
     }
-    return possibleMoves;
-  }*/
-
-  /**
-   *Ties do not exist in this game as it is always possible for one player's flag to be taken or to reach the enemy backline.
-   */
-
+  }
   export function getWinner(board: Board, turnIndexOfMove: number, afterMove: boolean): string {
     //If one player has no flag, the other one is the winner.
     //Alternatively, if one player's flag is at the enemy backline and survived for one turn, that player wins
+    //showBoardConsole(board);
     let whiteFlag: boolean = false;
     let blackFlag: boolean = false;
+    for (let i = 0; i < ROWS; i++) {
+      for (let j = 0; j < COLS; j++) {
+      }
+    }
     for (let i = 0; i < ROWS; i++) {
       for (let j = 0; j < COLS; j++) {
         if(board[i][j].value === 1) {
@@ -326,30 +288,52 @@ module gameLogic {
   }
 
   /**
-   * Returns all the possible moves for the given board and turnIndexBeforeMove.
-   * Returns an empty array if the game is over.
-   */
-  /*export function getPossibleMoves(board: Board, turnIndexBeforeMove: number): IMove[] {
-    let possibleMoves: IMove[] = [];
-    for (let i = 0; i < ROWS; i++) {
-      for (let j = 0; j < COLS; j++) {
-        try {
-          possibleMoves.push(createMove(board, i, j, turnIndexBeforeMove));
-        } catch (e) {
-          // The cell in that position was full.
-        }
-      }
-    }
-    return possibleMoves;
-  }*/
-
-  /**
    * Returns the move that should be performed when player
    * with index turnIndexBeforeMove makes a move in cell row X col.
    */
+   export function getPossibleMoves(board: Board, turnIndexBeforeMove: number): IMove[] {
+     let possibleMoves: IMove[] = [];
+     for (let i = 0; i < gameLogic.ROWS; i++) {
+       for (let j = 0; j < gameLogic.COLS; j++) {
+         for (let k = 0; k < 4; k++) {
+           let deltaFrom: BoardDelta = {row: i, col:j};
+           let deltaTo: BoardDelta = {row: i, col:j};
+           //test all 4 possible moves and push only the ones that work
+           switch(k) {
+             case 0:
+               deltaTo.row = deltaFrom.row-1;
+               deltaTo.col = deltaFrom.col;
+               break;
+             case 1:
+               deltaTo.row = deltaFrom.row+1;
+               deltaTo.col = deltaFrom.col;
+               break;
+             case 2:
+               deltaTo.row = deltaFrom.row;
+               deltaTo.col = deltaFrom.col-1;
+               break;
+             case 3:
+               deltaTo.row = deltaFrom.row;
+               deltaTo.col = deltaFrom.col+1;
+               break;
+           }
+           try {
+             //let seed: number = Math.floor((Math.random()*4)+1);
+
+             possibleMoves.push(gameLogic.createMove(board, turnIndexBeforeMove, deltaFrom, deltaTo));
+           } catch (e) {
+             // The cell in that position was full.
+           }
+
+         }
+       }
+     }
+     return possibleMoves;
+   }
   export function createMove(
       board: Board, turnIndexBeforeMove: number, deltaFrom : BoardDelta, deltaTo: BoardDelta): IMove {
     if (!board) {
+      console.log("building board from createMove");
       // Initially (at the beginning of the match), the board in state is undefined.
       board = getInitialBoard();
     }
@@ -360,7 +344,7 @@ module gameLogic {
     if(deltaFrom.row === deltaTo.row && deltaFrom.col === deltaTo.col) {
       throw new Error ("One must move to a new position.");
     }
-    if(turnIndexBeforeMove==1 && pieceToMove.color !== "white" || turnIndexBeforeMove==0 && pieceToMove.color !== "black") {
+    if(turnIndexBeforeMove==0 && pieceToMove.color !== "white" || turnIndexBeforeMove==1 && pieceToMove.color !== "black") {
       throw new Error ("That's not your piece to move!");
     }
     //if(row) //make sure that the new location is within 1 space of the old location either by row or column EXCLUSIVELY
@@ -381,7 +365,7 @@ module gameLogic {
     boardAfterMove[deltaTo.row][deltaTo.col].value = winningPiece(board[deltaFrom.row][deltaFrom.col].value, board[deltaTo.row][deltaTo.col].value);
 
     boardAfterMove[deltaTo.row][deltaTo.col].name = getPieceName(boardAfterMove[deltaTo.row][deltaTo.col].value);
-    console.log("winning piece is: ", boardAfterMove[deltaTo.row][deltaTo.col].name);
+    //console.log("winning piece is: ", boardAfterMove[deltaTo.row][deltaTo.col].name);
     boardAfterMove[deltaTo.row][deltaTo.col].color = getPieceColor(boardAfterMove[deltaTo.row][deltaTo.col].value);
     //Once the piece has moved, remove its occurrence from the previous state
     boardAfterMove[deltaFrom.row][deltaFrom.col].color = "gray";
