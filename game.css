@@ -17,13 +17,22 @@
    background: lightgray
 }
 .black {
-  background: black
+  background: url(imgs/black.png);
+  background-size:   cover;
+  background-position: center center;
 }
 
 .white {
-  background: white
+  background: url(imgs/white.png);
+  background-size:   cover;
+  background-position: center center;
 }
 
+.EMP {
+  background: url(imgs/EMP.png);
+  background-size:   cover;
+  background-position: center center;
+}
 .WFL {
   background: url(imgs/WFL.png);
   background-size:   cover;
@@ -211,7 +220,20 @@
 	-o-animation: slowlyAppear 0.5s linear;
 	animation: slowlyAppear 0.5s linear;
 }
-
+.rotateW {
+	-webkit-transform: rotate(0deg);
+	-moz-transform: rotate(0deg);
+	-ms-transform: rotate(0deg);
+	-o-transform: rotate(0deg);
+	transform: rotate(0deg);
+}
+.rotateB {
+	-webkit-transform: rotate(180deg);
+	-moz-transform: rotate(180deg);
+	-ms-transform: rotate(180deg);
+	-o-transform: rotate(180deg);
+	transform: rotate(180deg);
+}
 @-webkit-keyframes slowlyAppear {
   from {opacity: 0.1;}
   to {opacity: 1;}

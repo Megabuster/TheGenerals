@@ -5,8 +5,10 @@ var game;
     var isComputerTurn = false;
     var state = null;
     var turnIndex = null;
-    game.deltaFromSet = false;
-    game.currentDeltaFrom = { row: 0, col: 0 };
+    var lastUpdateUI = null;
+    var deltaFromSet = false;
+    var currentDeltaFrom = { row: -1, col: -1 };
+    game.currentPlayMode = "";
     game.isHelpModalShown = false;
     function init() {
         console.log("Translation of 'RULES_OF_TICTACTOE' is " + translate('RULES_OF_TICTACTOE'));
@@ -23,6 +25,12 @@ var game;
         document.addEventListener("oanimationend", animationEndedCallback, false); // Opera
     }
     game.init = init;
+    //The oddity of this code has to do with how this is being called to turn the board
+    function playerTurn() {
+        if (game.currentPlayMode)
+            return true; //white or 0
+    }
+    game.playerTurn = playerTurn;
     function animationEndedCallback() {
         $rootScope.$apply(function () {
             log.info("Animation ended");
@@ -33,18 +41,26 @@ var game;
         });
     }
     function sendComputerMove() {
-        gameService.makeMove(aiService.createComputerMove(state.board, turnIndex, { maxDepth: 1 }));
+        gameService.makeMove(aiService.findComputerMove(lastUpdateUI));
     }
     function updateUI(params) {
         animationEnded = false;
+        lastUpdateUI = params;
         state = params.stateAfterMove;
+        game.currentPlayMode = params.playMode;
         //$rootScope.state = state;
-        console.log("test updateUI");
+        //console.log("test updateUI");
         if (!state.board) {
-            console.log("test appear once");
             state.board = gameLogic.getInitialBoard();
+            console.log(JSON.stringify(state.board));
         }
-        gameLogic.showBoardConsole(state.board);
+        rotateGameBoard(params);
+        /*if (!state.board && params.yourPlayerIndex === params.turnIndexAfterMove) {
+              state.board = gameLogic.getInitialBoard();
+              //let move = gameLogic.getInitialMove();
+              //gameService.makeMove(move);
+        }*/
+        //gameLogic.showBoardConsole(state.board);
         canMakeMove = params.turnIndexAfterMove >= 0 &&
             params.yourPlayerIndex === params.turnIndexAfterMove; // it's my turn
         turnIndex = params.turnIndexAfterMove;
@@ -65,6 +81,22 @@ var game;
             }
         }
     }
+    function rotateGameBoard(params) {
+        console.log(game.currentPlayMode);
+        if (params.playMode !== "single-player" && params.playMode !== "playAgainstTheComputer") {
+            var gameBoard = document.getElementById("gameArea");
+            switch (params.yourPlayerIndex) {
+                case 0:
+                    console.log("White player");
+                    gameBoard.className = "rotateW";
+                    break;
+                case 1:
+                    console.log("Black player");
+                    gameBoard.className = "rotateB";
+                    break;
+            }
+        }
+    }
     function myPiece(row, col, playerId) {
         var myColor = " ";
         if (playerId === 0) {
@@ -80,13 +112,14 @@ var game;
             console.log("Not your piece to move");
             return false;
         }
-        var possibleMoves = gameLogic.getPossibleMoves(state.board, playerId);
-        if (possibleMoves.length == 0) {
-            console.log("You have nowhere to move that piece");
-            return false;
+        return true; /*
+        let possibleMoves: IMove[] = gameLogic.getMovesForPiece(state.board, playerId, row, col);
+        if (possibleMoves.length == 0){
+          console.log("You have nowhere to move that piece");
+          return false;
         }
         console.log("You can move the piece from ", row, col, "player ", playerId);
-        return true;
+        return true;*/
     }
     function cellClicked(row, col) {
         log.info(["Clicked on cell:", row, col]);
@@ -96,34 +129,71 @@ var game;
         if (!canMakeMove) {
             return;
         }
-        //try {
-        if (game.deltaFromSet === false && myPiece(row, col, turnIndex) == true) {
-            console.log("Able to make move from location");
-            game.currentDeltaFrom.row = row;
-            game.currentDeltaFrom.col = col;
-            game.deltaFromSet = true;
+        //gameLogic.showBoardConsole(state.board);
+        try {
+            console.log("About to decide on cell click - delta and is it my piece?", deltaFromSet, myPiece(row, col, turnIndex));
+            if (deltaFromSet === false && myPiece(row, col, turnIndex) == true) {
+                console.log("Able to make move from location");
+                currentDeltaFrom.row = row;
+                currentDeltaFrom.col = col;
+                deltaFromSet = true;
+                return;
+            }
+            else if (deltaFromSet === true) {
+                if (currentDeltaFrom.row === row && currentDeltaFrom.col === col) {
+                    //this means that we clicked on the same piece again (negate the last click to allow for a new choice)
+                    deltaFromSet = false;
+                    currentDeltaFrom.row = -1;
+                    currentDeltaFrom.col = -1;
+                    return;
+                }
+                else {
+                    console.log("deltaFrom is currently: ", currentDeltaFrom.row, currentDeltaFrom.col, " with turn index ", turnIndex);
+                    var move = gameLogic.createMove(state.board, lastUpdateUI.turnIndexAfterMove, currentDeltaFrom, { row: row, col: col });
+                    canMakeMove = false; // to prevent making another move
+                    deltaFromSet = false;
+                    gameService.makeMove(move);
+                    console.log("made move to: ", row, col);
+                    return;
+                }
+            }
+            else {
+                console.log("erroneous cell click result");
+                return;
+            }
         }
-        else if (game.deltaFromSet === true) {
-            console.log("deltaFrom is currently: ", game.currentDeltaFrom.row, game.currentDeltaFrom.col);
-            var move = gameLogic.createMove(state.board, turnIndex, game.currentDeltaFrom, { row: row, col: col });
-            canMakeMove = false; // to prevent making another move
-            game.deltaFromSet = false;
-            gameService.makeMove(move);
-            console.log("made move to: ", row, col);
+        catch (e) {
+            log.info(["Caught cell click error"]);
+            return;
         }
-        //} catch (e) {
-        //log.info(["Caught cell click error"]);
-        //return;
-        //}
     }
     game.cellClicked = cellClicked;
     function shouldShowImage(row, col) {
         var cell = state.board[row][col];
-        //return cell.value !== 0;
-        return getPiece(cell.value);
+        return cell.name !== "";
     }
     game.shouldShowImage = shouldShowImage;
+    function showImage(row, col) {
+        var cell = state.board[row][col];
+        var imageValue = cell.value;
+        //return cell.value !== 0;
+        if (turnIndex === 0 || game.currentPlayMode === "playAgainstTheComputer") {
+            if (cell.color === "black") {
+                //code for black pieces
+                imageValue = 32;
+            }
+        }
+        else {
+            if (cell.color === "white") {
+                //code for white pieces
+                imageValue = 31;
+            }
+        }
+        return getPiece(imageValue);
+    }
+    game.showImage = showImage;
     function getPiece(piece) {
+        //return gameLogic.getPieceName(piece);
         return 'imgs/' + gameLogic.getPieceName(piece) + '.png';
     }
 })(game || (game = {}));
@@ -131,9 +201,9 @@ angular.module('myApp', ['ngTouch', 'ui.bootstrap', 'gameServices'])
     .run(function () {
     $rootScope['game'] = game;
     translate.setLanguage('en', {
-        RULES_OF_TICTACTOE: "Rules of TicTacToe",
-        RULES_SLIDE1: "You and your opponent take turns to mark the grid in an empty spot. The first mark is X, then O, then X, then O, etc.",
-        RULES_SLIDE2: "The first to mark a whole row, column or diagonal wins.",
+        RULES_OF_TICTACTOE: "Rules of The Generals",
+        RULES_SLIDE1: "Start with a field of arbitrarily placed pieces.",
+        RULES_SLIDE2: "During your turn, you can move any piece one step vertically or horizontally.",
         CLOSE: "Close"
     });
     game.init();

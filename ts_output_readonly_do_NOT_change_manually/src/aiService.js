@@ -42,6 +42,12 @@ var aiService;
         return possibleMoves;
     }
     aiService.getPossibleMoves = getPossibleMoves;
+    function findComputerMove(updateUI) {
+        return createComputerMove(updateUI.stateAfterMove.board, updateUI.turnIndexAfterMove, 
+        // at most 1 second for the AI to choose a move (but might be much quicker)
+        { millisecondsLimit: 1000 });
+    }
+    aiService.findComputerMove = findComputerMove;
     function createComputerMove(board, playerIndex, alphaBetaLimits) {
         var totalMoves = getPossibleMoves(board, playerIndex).length;
         var seed = Math.floor((Math.random() * totalMoves) + 1);

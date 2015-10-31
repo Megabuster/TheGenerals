@@ -42,7 +42,13 @@ module aiService {
     }
     return possibleMoves;
   }
-
+  export function findComputerMove(updateUI: IUpdateUI): IMove {
+     return createComputerMove(
+         updateUI.stateAfterMove.board,
+         updateUI.turnIndexAfterMove,
+         // at most 1 second for the AI to choose a move (but might be much quicker)
+         {millisecondsLimit: 1000});
+   }
   export function createComputerMove(
       board: Board, playerIndex: number, alphaBetaLimits: IAlphaBetaLimits): IMove {
     let totalMoves: number = getPossibleMoves(board, playerIndex).length;

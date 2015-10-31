@@ -31,7 +31,7 @@ var gameLogic;
             return 16;
         }
         else if ((attacker === 16 || attacked === 16) && (attacker !== 0 || attacked !== 0)) {
-            return Math.min(attacker, attacker);
+            return Math.min(attacker, attacked);
         }
         else if (attacker === 2 && attacked === 30 || attacker === 30 && attacked === 2) {
             return 2;
@@ -99,6 +99,9 @@ var gameLogic;
             case 28: return "BS4";
             case 29: return "BS5";
             case 30: return "BSP";
+            case 31: return "white";
+            case 32: return "black";
+            case 33: return "light";
         }
     }
     gameLogic.getPieceName = getPieceName;
@@ -114,25 +117,60 @@ var gameLogic;
           [{value: 5, name: "WL1", color: "white"},{value: 10, name: "WS1", color: "white"},{value: 7, name: "WMA", color: "white"},{value: 14, name: "WS5", color: "white"},{value: 6, name: "WCA", color: "white"},{value: 0, name: "EMP", color: "gray"},{value: 0, name: "EMP", color: "gray"},{value: 0, name: "EMP", color: "gray"},{value: 0, name: "EMP", color: "gray"}],
           [{value: 4, name: "WL2", color: "white"},{value: 9, name: "WCO", color: "white"},{value: 8, name: "WLC", color: "white"},{value: 15, name: "WSP", color: "white"},{value: 1, name: "WFL", color: "white"},{value: 0, name: "EMP", color: "gray"},{value: 3, name: "WSE", color: "white"},{value: 11, name: "WS2", color: "white"},{value: 13, name: "WS4", color: "white"}]];*/
         var board = [];
+        var k = 30;
         for (var i = 0; i < gameLogic.ROWS; i++) {
             board[i] = [];
             for (var j = 0; j < gameLogic.COLS; j++) {
+                /*if(k>0) {
+                  k--;
+                 board[i][j] = {name: getPieceName(k), value: k, color: getPieceColor(k)};
+                }
+                else {*/
                 board[i][j] = { name: "EMP", value: 0, color: "gray" };
             }
         }
-        console.log("test appear once");
-        return setupInitialBoard(board);
+        board = [[{ "name": "EMP", "value": 0, "color": "gray" }, { "name": "BPR", "value": 17, "color": "black" }, { "name": "BS1", "value": 25, "color": "black" }, { "name": "BCA", "value": 21, "color": "black" }, { "name": "BSE", "value": 18, "color": "black" }, { "name": "BPR", "value": 17, "color": "black" }, { "name": "BPR", "value": 17, "color": "black" }, { "name": "BLC", "value": 23, "color": "black" }, { "name": "BSP", "value": 30, "color": "black" }],
+            [{ "name": "EMP", "value": 0, "color": "gray" }, { "name": "BS5", "value": 29, "color": "black" }, { "name": "BPR", "value": 17, "color": "black" }, { "name": "EMP", "value": 0, "color": "gray" }, { "name": "BFL", "value": 16, "color": "black" }, { "name": "BS2", "value": 26, "color": "black" }, { "name": "BPR", "value": 17, "color": "black" }, { "name": "BL1", "value": 20, "color": "black" }, { "name": "BS4", "value": 28, "color": "black" }],
+            [{ "name": "BMA", "value": 22, "color": "black" }, { "name": "BS3", "value": 27, "color": "black" }, { "name": "BCO", "value": 24, "color": "black" }, { "name": "EMP", "value": 0, "color": "gray" }, { "name": "BPR", "value": 17, "color": "black" }, { "name": "BL2", "value": 19, "color": "black" }, { "name": "BSP", "value": 30, "color": "black" }, { "name": "EMP", "value": 0, "color": "gray" }, { "name": "EMP", "value": 0, "color": "gray" }],
+            [{ "name": "EMP", "value": 0, "color": "gray" }, { "name": "EMP", "value": 0, "color": "gray" }, { "name": "EMP", "value": 0, "color": "gray" }, { "name": "EMP", "value": 0, "color": "gray" }, { "name": "EMP", "value": 0, "color": "gray" }, { "name": "EMP", "value": 0, "color": "gray" }, { "name": "EMP", "value": 0, "color": "gray" }, { "name": "EMP", "value": 0, "color": "gray" }, { "name": "EMP", "value": 0, "color": "gray" }],
+            [{ "name": "EMP", "value": 0, "color": "gray" }, { "name": "EMP", "value": 0, "color": "gray" }, { "name": "EMP", "value": 0, "color": "gray" }, { "name": "EMP", "value": 0, "color": "gray" }, { "name": "EMP", "value": 0, "color": "gray" }, { "name": "EMP", "value": 0, "color": "gray" }, { "name": "EMP", "value": 0, "color": "gray" }, { "name": "EMP", "value": 0, "color": "gray" }, { "name": "EMP", "value": 0, "color": "gray" }],
+            [{ "name": "WSE", "value": 3, "color": "white" }, { "name": "EMP", "value": 0, "color": "gray" }, { "name": "EMP", "value": 0, "color": "gray" }, { "name": "WMA", "value": 7, "color": "white" }, { "name": "WSP", "value": 15, "color": "white" }, { "name": "EMP", "value": 0, "color": "gray" }, { "name": "EMP", "value": 0, "color": "gray" }, { "name": "WL2", "value": 4, "color": "white" }, { "name": "WS1", "value": 10, "color": "white" }],
+            [{ "name": "WPR", "value": 2, "color": "white" }, { "name": "WLC", "value": 8, "color": "white" }, { "name": "WCA", "value": 6, "color": "white" }, { "name": "WPR", "value": 2, "color": "white" }, { "name": "WCO", "value": 9, "color": "white" }, { "name": "WS4", "value": 13, "color": "white" }, { "name": "EMP", "value": 0, "color": "gray" }, { "name": "WPR", "value": 2, "color": "white" }, { "name": "WL1", "value": 5, "color": "white" }],
+            [{ "name": "WPR", "value": 2, "color": "white" }, { "name": "EMP", "value": 0, "color": "gray" }, { "name": "WS3", "value": 12, "color": "white" }, { "name": "WFL", "value": 1, "color": "white" }, { "name": "WS2", "value": 11, "color": "white" }, { "name": "WSP", "value": 15, "color": "white" }, { "name": "WPR", "value": 2, "color": "white" }, { "name": "WS5", "value": 14, "color": "white" }, { "name": "WPR", "value": 2, "color": "white" }]];
+        return board;
+        //return setupInitialBoard(board);
     }
     gameLogic.getInitialBoard = getInitialBoard;
+    /*export function getInitialMove(board: Board) : IMove {
+      let firstOperation: IMove = [],
+        visibilityOperations: IMove = [],
+        setRandomInteger: ISetRandomInteger = {key: "", from: 0, to: 55},
+        setVisibilities: ISetVisibility[] = [],shuffleKeys: IShuffle = {keys: []},
+        i: number, j: number, k: number, assignedTiles: number, tilesToAssign: number;
+        //let temp: number = 0;
+        let randomInt: ISetRandomInteger = {key: "test", from: 0, to: 55};
+        //console.log(randomInt.test);
+        //gameService.makeMove([{setTurn: {turnIndex: 0}}, setRandomInteger("initial_x_row", 0, ROWS), setRandomInteger("initial_x_column", 0, COLS)]);
+       //setupInitialBoard(board);
+  
+        firstOperation.push({setTurn: {turnIndex: 0}});
+        firstOperation.push({set: {key: 'board', value: board}});
+        return firstOperation;
+    }*/
+    //Assign visibilities on the field depending on whose turn it currently is
+    /*export function pieceVisibility(board: Board) {
+  
+    }*/
     //Notable clauses: white can only use rows (i) 5-7 while black can only use rows (i) 0-2
     //Loops will work as such: each piece (from 1-30 in )
+    /**
+     *Let white place pieces first. All 21 pieces must be placed on the board.
+     */
+    /**
+     *Let black then add pieces before proceeding with the game (white's turn)
+     */
     function setupInitialBoard(board) {
-        /**
-         *Let white place pieces first. All 21 pieces must be placed on the board.
-         */
-        /**
-         *Let black then add pieces before proceeding with the game (white's turn)
-         */
+        //let setRandom: IMove = setRandomInteger("test", 1, 8);
         for (var i = 1; i < 16; i++) {
             if (i === 2) {
                 for (var j = 0; j < 6; j++) {
@@ -174,6 +212,8 @@ var gameLogic;
             var completed = false;
             do {
                 var rowPos = Math.floor(Math.random() * 3);
+                ;
+                //setRandomInteger(rowPos,1,2);//Math.floor(Math.random() * 3);
                 var colPos = Math.floor(Math.random() * 9);
                 //console.log("LOOP ATTEMPT", rowPos, colPos, pieceNo, board[rowPos][colPos].name);
                 if (board[rowPos][colPos].name === "EMP") {
@@ -217,12 +257,12 @@ var gameLogic;
             }
             console.log(rowName);
         }
+        console.log("End display board");
     }
     gameLogic.showBoardConsole = showBoardConsole;
     function getWinner(board, turnIndexOfMove, afterMove) {
         //If one player has no flag, the other one is the winner.
         //Alternatively, if one player's flag is at the enemy backline and survived for one turn, that player wins
-        //showBoardConsole(board);
         var whiteFlag = false;
         var blackFlag = false;
         for (var i = 0; i < gameLogic.ROWS; i++) {
@@ -278,76 +318,87 @@ var gameLogic;
      * Returns the move that should be performed when player
      * with index turnIndexBeforeMove makes a move in cell row X col.
      */
-    function getPossibleMoves(board, turnIndexBeforeMove) {
+    function getMovesForPiece(board, turnIndexBeforeMove, row, col) {
         var possibleMoves = [];
-        for (var i = 0; i < gameLogic.ROWS; i++) {
-            for (var j = 0; j < gameLogic.COLS; j++) {
-                for (var k = 0; k < 4; k++) {
-                    var deltaFrom = { row: i, col: j };
-                    var deltaTo = { row: i, col: j };
-                    //test all 4 possible moves and push only the ones that work
-                    switch (k) {
-                        case 0:
-                            deltaTo.row = deltaFrom.row - 1;
-                            deltaTo.col = deltaFrom.col;
-                            break;
-                        case 1:
-                            deltaTo.row = deltaFrom.row + 1;
-                            deltaTo.col = deltaFrom.col;
-                            break;
-                        case 2:
-                            deltaTo.row = deltaFrom.row;
-                            deltaTo.col = deltaFrom.col - 1;
-                            break;
-                        case 3:
-                            deltaTo.row = deltaFrom.row;
-                            deltaTo.col = deltaFrom.col + 1;
-                            break;
-                    }
-                    try {
-                        //let seed: number = Math.floor((Math.random()*4)+1);
-                        possibleMoves.push(gameLogic.createMove(board, turnIndexBeforeMove, deltaFrom, deltaTo));
-                    }
-                    catch (e) {
-                    }
-                }
+        console.log("Moving from ", row, col);
+        for (var k = 0; k < 4; k++) {
+            var deltaFrom = { row: row, col: col };
+            var deltaTo = { row: row, col: col };
+            //test all 4 possible moves and push only the ones that work
+            switch (k) {
+                case 0:
+                    deltaTo.row = deltaFrom.row - 1;
+                    deltaTo.col = deltaFrom.col;
+                    break;
+                case 1:
+                    deltaTo.row = deltaFrom.row + 1;
+                    deltaTo.col = deltaFrom.col;
+                    break;
+                case 2:
+                    deltaTo.row = deltaFrom.row;
+                    deltaTo.col = deltaFrom.col - 1;
+                    break;
+                case 3:
+                    deltaTo.row = deltaFrom.row;
+                    deltaTo.col = deltaFrom.col + 1;
+                    break;
+            }
+            try {
+                possibleMoves.push(createMove(board, turnIndexBeforeMove, deltaFrom, deltaTo));
+            }
+            catch (e) {
             }
         }
+        console.log("Total moves found: ", possibleMoves.length);
         return possibleMoves;
     }
-    gameLogic.getPossibleMoves = getPossibleMoves;
+    gameLogic.getMovesForPiece = getMovesForPiece;
+    //check legality of the move without changing the game state
+    function checkLegalMove(board, turnIndexBeforeMove, deltaFrom, deltaTo) {
+        var pieceToMove = board[deltaFrom.row][deltaFrom.col];
+        //console.log("Piece to move", pieceToMove.name, pieceToMove.value, pieceToMove.color, deltaFrom.row, deltaFrom.col);
+        //showBoardConsole(board);
+        if (deltaTo.row < 0 || deltaTo.row >= gameLogic.ROWS || deltaTo.col < 0 || deltaTo.col >= gameLogic.COLS) {
+            //console.log("Can't move off board");
+            throw new Error("One can only make a move within the board!");
+        }
+        if (deltaFrom.row === deltaTo.row && deltaFrom.col === deltaTo.col) {
+            //console.log("Can't eat yourself");
+            throw new Error("One must move to a new position.");
+        }
+        if (turnIndexBeforeMove == 0 && pieceToMove.color !== "white" || turnIndexBeforeMove == 1 && pieceToMove.color !== "black") {
+            //console.log("Can't move wrong piece", turnIndexBeforeMove, pieceToMove.color);
+            throw new Error("That's not your piece to move!");
+        }
+        //if(row) //make sure that the new location is within 1 space of the old location either by row or column EXCLUSIVELY
+        if ((Math.abs(deltaFrom.row - deltaTo.row) > 1 || Math.abs(deltaFrom.col - deltaTo.col) > 1) ||
+            (Math.abs(deltaFrom.row - deltaTo.row) === 1 && Math.abs(deltaFrom.col - deltaTo.col) === 1)) {
+            //console.log("Can't fly");
+            throw new Error("One space vertically or horizontally is the move limit!");
+        }
+        if (board[deltaFrom.row][deltaFrom.col].color === board[deltaTo.row][deltaTo.col].color) {
+            console.log("Can't eat your own piece");
+            throw new Error("Can't eat own player's piece!");
+        }
+        if (getWinner(board, turnIndexBeforeMove, false) !== '') {
+            //console.log("It's done, Jim");
+            throw new Error("Can only make a move if the game is not over!");
+        }
+        //console.log("This move is legal");
+        return true;
+    }
+    gameLogic.checkLegalMove = checkLegalMove;
     function createMove(board, turnIndexBeforeMove, deltaFrom, deltaTo) {
         if (!board) {
             console.log("building board from createMove");
             // Initially (at the beginning of the match), the board in state is undefined.
             board = getInitialBoard();
         }
-        var pieceToMove = board[deltaFrom.row][deltaFrom.col];
-        if (deltaTo.row < 0 || deltaTo.row >= gameLogic.ROWS || deltaTo.col < 0 || deltaTo.col >= gameLogic.COLS) {
-            throw new Error("One can only make a move within the board!");
-        }
-        if (deltaFrom.row === deltaTo.row && deltaFrom.col === deltaTo.col) {
-            throw new Error("One must move to a new position.");
-        }
-        if (turnIndexBeforeMove == 0 && pieceToMove.color !== "white" || turnIndexBeforeMove == 1 && pieceToMove.color !== "black") {
-            throw new Error("That's not your piece to move!");
-        }
-        //if(row) //make sure that the new location is within 1 space of the old location either by row or column EXCLUSIVELY
-        if ((Math.abs(deltaFrom.row - deltaTo.row) > 1 || Math.abs(deltaFrom.col - deltaTo.col) > 1) ||
-            (Math.abs(deltaFrom.row - deltaTo.row) === 1 && Math.abs(deltaFrom.col - deltaTo.col) === 1)) {
-            throw new Error("One space vertically or horizontally is the move limit!");
-        }
-        if (board[deltaFrom.row][deltaFrom.col].color === board[deltaTo.row][deltaTo.col].color) {
-            throw new Error("Can't eat own player's piece!");
-        }
-        if (getWinner(board, turnIndexBeforeMove, false) !== '') {
-            throw new Error("Can only make a move if the game is not over!");
-        }
+        checkLegalMove(board, turnIndexBeforeMove, deltaFrom, deltaTo);
         var boardAfterMove = angular.copy(board);
         //Let the fight break out. The winning piece takes over the slot
         boardAfterMove[deltaTo.row][deltaTo.col].value = winningPiece(board[deltaFrom.row][deltaFrom.col].value, board[deltaTo.row][deltaTo.col].value);
         boardAfterMove[deltaTo.row][deltaTo.col].name = getPieceName(boardAfterMove[deltaTo.row][deltaTo.col].value);
-        //console.log("winning piece is: ", boardAfterMove[deltaTo.row][deltaTo.col].name);
         boardAfterMove[deltaTo.row][deltaTo.col].color = getPieceColor(boardAfterMove[deltaTo.row][deltaTo.col].value);
         //Once the piece has moved, remove its occurrence from the previous state
         boardAfterMove[deltaFrom.row][deltaFrom.col].color = "gray";
@@ -375,21 +426,28 @@ var gameLogic;
     gameLogic.createMove = createMove;
     function isMoveOk(params) {
         var move = params.move;
+        //showBoardConsole(move[1].set.value);
         var turnIndexBeforeMove = params.turnIndexBeforeMove;
         var stateBeforeMove = params.stateBeforeMove;
+        var board = stateBeforeMove.board;
+        //showBoardConsole(board);
+        //showBoardConsole(stateBeforeMove.board);
         // The state and turn after move are not needed in TicTacToe (or in any game where all state is public).
         //let turnIndexAfterMove = params.turnIndexAfterMove;
         //let stateAfterMove = params.stateAfterMove;
         // We can assume that turnIndexBeforeMove and stateBeforeMove are legal, and we need
         // to verify that move is legal.
+        //showBoardConsole(stateBeforeMove.board);
         try {
             var deltaFrom = move[2].set.value;
             var deltaTo = move[3].set.value;
-            var board = stateBeforeMove.board;
+            //let board = stateBeforeMove.board;
+            //showBoardConsole(stateBeforeMove.board);
+            console.log("is this the call?");
             var expectedMove = createMove(board, turnIndexBeforeMove, deltaFrom, deltaTo);
             console.log(turnIndexBeforeMove, deltaFrom, deltaTo);
             if (!angular.equals(move, expectedMove)) {
-                //console.log("fails");
+                console.log("fails");
                 return false;
             }
         }
