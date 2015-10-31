@@ -24,27 +24,82 @@ var gameLogic;
     gameLogic.COLS = 9;
     function winningPiece(attacker, attacked) {
         //console.log(attacker, attacked);
+        var attackerColor = getPieceColor(attacker);
+        var attackedColor = getPieceColor(attacked);
         if (attacker === 1 && attacked === 16) {
+            //console.log("Returning", 1);
             return 1;
         }
         else if (attacker === 16 && attacked === 1) {
+            //console.log("Returning", 16);
             return 16;
         }
-        else if ((attacker === 16 || attacked === 16) && (attacker !== 0 || attacked !== 0)) {
-            return Math.min(attacker, attacked);
+        if (attacker > 15) {
+            attacker -= 15;
         }
-        else if (attacker === 2 && attacked === 30 || attacker === 30 && attacked === 2) {
-            return 2;
+        else if (attacked > 15) {
+            attacked -= 15;
         }
-        else if (((attacker - attacked) === 15 || (attacked - attacker) === 15) && attacker !== 0 && attacked !== 0) {
+        if (attacker === attacked) {
+            //console.log("Returning", 0);
             return 0;
         }
-        else if (attacker > attacked) {
-            return attacker;
+        if ((attacker === 2 && attacked === 15)) {
+            if (attackerColor === "white") {
+                //console.log("Returning", 2);
+                return 2;
+            }
+            else {
+                //console.log("Returning", 17);
+                return 17;
+            }
+        }
+        else if ((attacker === 15 && attacked === 2)) {
+            if (attackedColor === "white") {
+                //console.log("Returning", 2);
+                return 2;
+            }
+            else {
+                //console.log("Returning", 17);
+                return 17;
+            }
+        }
+        if (attacker > attacked) {
+            if (attackerColor === "white") {
+                //console.log("Returning", "attacker");
+                return attacker;
+            }
+            else {
+                //console.log("Returning", (attacker+15));
+                return (attacker += 15);
+            }
+        }
+        if (attacker < attacked) {
+            if (attackedColor === "white") {
+                //console.log("Returning", "attacked");
+                return attacked;
+            }
+            else {
+                //console.log("Returning", (attacked+15));
+                return (attacked += 15);
+            }
+        }
+        /*
+        else if((attacker === 16 || attacked === 16) && (attacker !== 0 || attacked !== 0)) { //if black flag is in a battle otherwise, it loses
+          return Math.min(attacker, attacked);
+        }
+        else if(attacker===2&&attacked===30 || attacker===30&&attacked===2) {
+          return 2;
+        }
+        else if(((attacker - attacked)===15 || (attacked - attacker)===15) && attacker!==0 && attacked!==0) {
+          return 0;
+        }
+        else if(attacker > attacked) {
+          return attacker;
         }
         else if (attacker < attacked) {
-            return attacked;
-        }
+          return attacked;
+        }*/
         /*else {
           return 0;
         }*/
@@ -106,16 +161,7 @@ var gameLogic;
     }
     gameLogic.getPieceName = getPieceName;
     /** Returns the initial Generals board, which is a 8x9 matrix containing all pieces as placed by each player. */
-    function getInitialBoard() {
-        /*return   [
-          [{value: 16, name: "BFL", color: "black"},{value: 30, name: "BSP", color: "black"},{value: 17, name: "BPR", color: "black"},{value: 17, name: "BPR", color: "black"},{value: 17, name: "BPR", color: "black"},{value: 17, name: "BPR", color: "black"},{value: 17, name: "BPR", color: "black"},{value: 27, name: "BS3", color: "black"},{value: 0, name: "EMP", color: "gray"}],
-          [{value: 20, name: "BL1", color: "black"},{value: 25, name: "BS1", color: "black"},{value: 22, name: "BMA", color: "black"},{value: 29, name: "BS5", color: "black"},{value: 21, name: "BCA", color: "black"},{value: 18, name: "BSE", color: "black"},{value: 26, name: "BS2", color: "black"},{value: 28, name: "BS4", color: "black"},{value: 0, name: "EMP", color: "gray"}],
-          [{value: 19, name: "BL2", color: "black"},{value: 24, name: "BCO", color: "black"},{value: 23, name: "BLC", color: "black"},{value: 30, name: "BSP", color: "black"},{value: 17, name: "BPR", color: "black"},{value: 0, name: "EMP", color: "gray"},{value: 0, name: "EMP", color: "gray"},{value: 0, name: "EMP", color: "gray"},{value: 0, name: "EMP", color: "gray"}],
-          [{value: 0, name: "EMP", color: "gray"},{value: 0, name: "EMP", color: "gray"},{value: 0, name: "EMP", color: "gray"},{value: 0, name: "EMP", color: "gray"},{value: 0, name: "EMP", color: "gray"},{value: 0, name: "EMP", color: "gray"},{value: 0, name: "EMP", color: "gray"},{value: 0, name: "EMP", color: "gray"},{value: 0, name: "EMP", color: "gray"}],
-          [{value: 0, name: "EMP", color: "gray"},{value: 0, name: "EMP", color: "gray"},{value: 0, name: "EMP", color: "gray"},{value: 0, name: "EMP", color: "gray"},{value: 0, name: "EMP", color: "gray"},{value: 0, name: "EMP", color: "gray"},{value: 0, name: "EMP", color: "gray"},{value: 0, name: "EMP", color: "gray"},{value: 0, name: "EMP", color: "gray"}],
-          [{value: 2, name: "WPR", color: "white"},{value: 2, name: "WPR", color: "white"},{value: 2, name: "WPR", color: "white"},{value: 2, name: "WPR", color: "white"},{value: 2, name: "WPR", color: "white"},{value: 2, name: "WPR", color: "white"},{value: 15, name: "WSP", color: "white"},{value: 12, name: "WS3", color: "white"},{value: 0, name: "EMP", color: "gray"}],
-          [{value: 5, name: "WL1", color: "white"},{value: 10, name: "WS1", color: "white"},{value: 7, name: "WMA", color: "white"},{value: 14, name: "WS5", color: "white"},{value: 6, name: "WCA", color: "white"},{value: 0, name: "EMP", color: "gray"},{value: 0, name: "EMP", color: "gray"},{value: 0, name: "EMP", color: "gray"},{value: 0, name: "EMP", color: "gray"}],
-          [{value: 4, name: "WL2", color: "white"},{value: 9, name: "WCO", color: "white"},{value: 8, name: "WLC", color: "white"},{value: 15, name: "WSP", color: "white"},{value: 1, name: "WFL", color: "white"},{value: 0, name: "EMP", color: "gray"},{value: 3, name: "WSE", color: "white"},{value: 11, name: "WS2", color: "white"},{value: 13, name: "WS4", color: "white"}]];*/
+    function getBlankBoard() {
         var board = [];
         var k = 30;
         for (var i = 0; i < gameLogic.ROWS; i++) {
@@ -129,6 +175,20 @@ var gameLogic;
                 board[i][j] = { name: "EMP", value: 0, color: "gray" };
             }
         }
+        return board;
+    }
+    gameLogic.getBlankBoard = getBlankBoard;
+    function getInitialBoard() {
+        /*return   [
+          [{value: 16, name: "BFL", color: "black"},{value: 30, name: "BSP", color: "black"},{value: 17, name: "BPR", color: "black"},{value: 17, name: "BPR", color: "black"},{value: 17, name: "BPR", color: "black"},{value: 17, name: "BPR", color: "black"},{value: 17, name: "BPR", color: "black"},{value: 27, name: "BS3", color: "black"},{value: 0, name: "EMP", color: "gray"}],
+          [{value: 20, name: "BL1", color: "black"},{value: 25, name: "BS1", color: "black"},{value: 22, name: "BMA", color: "black"},{value: 29, name: "BS5", color: "black"},{value: 21, name: "BCA", color: "black"},{value: 18, name: "BSE", color: "black"},{value: 26, name: "BS2", color: "black"},{value: 28, name: "BS4", color: "black"},{value: 0, name: "EMP", color: "gray"}],
+          [{value: 19, name: "BL2", color: "black"},{value: 24, name: "BCO", color: "black"},{value: 23, name: "BLC", color: "black"},{value: 30, name: "BSP", color: "black"},{value: 17, name: "BPR", color: "black"},{value: 0, name: "EMP", color: "gray"},{value: 0, name: "EMP", color: "gray"},{value: 0, name: "EMP", color: "gray"},{value: 0, name: "EMP", color: "gray"}],
+          [{value: 0, name: "EMP", color: "gray"},{value: 0, name: "EMP", color: "gray"},{value: 0, name: "EMP", color: "gray"},{value: 0, name: "EMP", color: "gray"},{value: 0, name: "EMP", color: "gray"},{value: 0, name: "EMP", color: "gray"},{value: 0, name: "EMP", color: "gray"},{value: 0, name: "EMP", color: "gray"},{value: 0, name: "EMP", color: "gray"}],
+          [{value: 0, name: "EMP", color: "gray"},{value: 0, name: "EMP", color: "gray"},{value: 0, name: "EMP", color: "gray"},{value: 0, name: "EMP", color: "gray"},{value: 0, name: "EMP", color: "gray"},{value: 0, name: "EMP", color: "gray"},{value: 0, name: "EMP", color: "gray"},{value: 0, name: "EMP", color: "gray"},{value: 0, name: "EMP", color: "gray"}],
+          [{value: 2, name: "WPR", color: "white"},{value: 2, name: "WPR", color: "white"},{value: 2, name: "WPR", color: "white"},{value: 2, name: "WPR", color: "white"},{value: 2, name: "WPR", color: "white"},{value: 2, name: "WPR", color: "white"},{value: 15, name: "WSP", color: "white"},{value: 12, name: "WS3", color: "white"},{value: 0, name: "EMP", color: "gray"}],
+          [{value: 5, name: "WL1", color: "white"},{value: 10, name: "WS1", color: "white"},{value: 7, name: "WMA", color: "white"},{value: 14, name: "WS5", color: "white"},{value: 6, name: "WCA", color: "white"},{value: 0, name: "EMP", color: "gray"},{value: 0, name: "EMP", color: "gray"},{value: 0, name: "EMP", color: "gray"},{value: 0, name: "EMP", color: "gray"}],
+          [{value: 4, name: "WL2", color: "white"},{value: 9, name: "WCO", color: "white"},{value: 8, name: "WLC", color: "white"},{value: 15, name: "WSP", color: "white"},{value: 1, name: "WFL", color: "white"},{value: 0, name: "EMP", color: "gray"},{value: 3, name: "WSE", color: "white"},{value: 11, name: "WS2", color: "white"},{value: 13, name: "WS4", color: "white"}]];*/
+        var board = getBlankBoard();
         board = [[{ "name": "EMP", "value": 0, "color": "gray" }, { "name": "BPR", "value": 17, "color": "black" }, { "name": "BS1", "value": 25, "color": "black" }, { "name": "BCA", "value": 21, "color": "black" }, { "name": "BSE", "value": 18, "color": "black" }, { "name": "BPR", "value": 17, "color": "black" }, { "name": "BPR", "value": 17, "color": "black" }, { "name": "BLC", "value": 23, "color": "black" }, { "name": "BSP", "value": 30, "color": "black" }],
             [{ "name": "EMP", "value": 0, "color": "gray" }, { "name": "BS5", "value": 29, "color": "black" }, { "name": "BPR", "value": 17, "color": "black" }, { "name": "EMP", "value": 0, "color": "gray" }, { "name": "BFL", "value": 16, "color": "black" }, { "name": "BS2", "value": 26, "color": "black" }, { "name": "BPR", "value": 17, "color": "black" }, { "name": "BL1", "value": 20, "color": "black" }, { "name": "BS4", "value": 28, "color": "black" }],
             [{ "name": "BMA", "value": 22, "color": "black" }, { "name": "BS3", "value": 27, "color": "black" }, { "name": "BCO", "value": 24, "color": "black" }, { "name": "EMP", "value": 0, "color": "gray" }, { "name": "BPR", "value": 17, "color": "black" }, { "name": "BL2", "value": 19, "color": "black" }, { "name": "BSP", "value": 30, "color": "black" }, { "name": "EMP", "value": 0, "color": "gray" }, { "name": "EMP", "value": 0, "color": "gray" }],
@@ -377,7 +437,7 @@ var gameLogic;
             throw new Error("One space vertically or horizontally is the move limit!");
         }
         if (board[deltaFrom.row][deltaFrom.col].color === board[deltaTo.row][deltaTo.col].color) {
-            console.log("Can't eat your own piece");
+            //console.log("Can't eat your own piece");
             throw new Error("Can't eat own player's piece!");
         }
         if (getWinner(board, turnIndexBeforeMove, false) !== '') {
@@ -397,9 +457,11 @@ var gameLogic;
         checkLegalMove(board, turnIndexBeforeMove, deltaFrom, deltaTo);
         var boardAfterMove = angular.copy(board);
         //Let the fight break out. The winning piece takes over the slot
+        //console.log("Being passed into winningPiece: ", board[deltaFrom.row][deltaFrom.col].value, board[deltaTo.row][deltaTo.col].value);
         boardAfterMove[deltaTo.row][deltaTo.col].value = winningPiece(board[deltaFrom.row][deltaFrom.col].value, board[deltaTo.row][deltaTo.col].value);
         boardAfterMove[deltaTo.row][deltaTo.col].name = getPieceName(boardAfterMove[deltaTo.row][deltaTo.col].value);
         boardAfterMove[deltaTo.row][deltaTo.col].color = getPieceColor(boardAfterMove[deltaTo.row][deltaTo.col].value);
+        //console.log("after win, piece number: ", boardAfterMove[deltaTo.row][deltaTo.col].value);
         //Once the piece has moved, remove its occurrence from the previous state
         boardAfterMove[deltaFrom.row][deltaFrom.col].color = "gray";
         boardAfterMove[deltaFrom.row][deltaFrom.col].name = "EMP";
@@ -443,7 +505,7 @@ var gameLogic;
             var deltaTo = move[3].set.value;
             //let board = stateBeforeMove.board;
             //showBoardConsole(stateBeforeMove.board);
-            console.log("is this the call?");
+            //console.log("is this the call?");
             var expectedMove = createMove(board, turnIndexBeforeMove, deltaFrom, deltaTo);
             console.log(turnIndexBeforeMove, deltaFrom, deltaTo);
             if (!angular.equals(move, expectedMove)) {
