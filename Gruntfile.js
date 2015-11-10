@@ -102,7 +102,7 @@ module.exports = function(grunt) {
   grunt.registerTask('default', [
 
       'concat', 'uglify',
-      'processhtml', 'manifest',
+      'processhtml', 'manifest', 'http-server'
       ]);
   /*grunt.registerTask('default', [
 	'karma',
