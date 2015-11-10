@@ -56,7 +56,26 @@ module.exports = function(grunt) {
             'imgs/HelpSlide1.png',
             'imgs/HelpSlide2.png',
             'imgs/HelpSlide4.png',
-            'imgs/HelpSlide5.png'
+            'imgs/HelpSlide5.png',
+            'imgs/black.png',
+            'imgs/EMP.png',
+            'imgs/WCA.png',
+            'imgs/WCO.png',
+            'imgs/WFL.png',
+            'imgs/white.png',
+            'imgs/WL1.png',
+            'imgs/WL2.png',
+            'imgs/WLC.png',
+            'imgs/WMA.png',
+            'imgs/WPR.png',
+            'imgs/WS1.png',
+            'imgs/WS2.png',
+            'imgs/WS3.png',
+            'imgs/WS4.png',
+            'imgs/WS5.png',
+            'imgs/WSE.png',
+            'imgs/WSP.png'
+
           ],
           network: [
             'dist/everything.min.js.map',
