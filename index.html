@@ -51,11 +51,11 @@
         <div class="modal-header">
           <button type="button" class="close" ng-click="game.isHelpModalShown = false" aria-label="Close"><span aria-hidden="true">&times;</span></button>
           <h4 class="modal-title" id="myModalLabel">
-            {{ 'RULES_OF_TICTACTOE' | translate }}
+            {{ 'RULES_OF_GENERALS' | translate }}
           </h4>
         </div>
         <div class="modal-body">
-          <carousel style="height: 150px">
+          <carousel style="height: 350px">
             <slide>
               <table>
                 <tr>
@@ -63,7 +63,7 @@
                     {{ 'RULES_SLIDE1' | translate }}
                   </td>
                   <td>
-                    <img src="imgs/HelpSlide1.png" style="height:100px;">
+                    <img src="imgs/HelpSlide1.png" style="height:300px;">
                   </td>
                 </tr>
               </table>
@@ -75,7 +75,43 @@
                   {{ 'RULES_SLIDE2' | translate }}
                   </td>
                   <td>
-                    <img src="imgs/HelpSlide2.png" style="height:100px;">
+                    <img src="imgs/HelpSlide2.png" style="height:300px;">
+                  </td>
+                </tr>
+              </table>
+            </slide>
+            <slide>
+              <table>
+                <tr>
+                  <td>
+                  {{ 'RULES_SLIDE3' | translate }}
+                  </td>
+                  <td>
+                    <img src="imgs/WFL.png" style="height:150px;">
+                  </td>
+                </tr>
+              </table>
+            </slide>
+            <slide>
+              <table>
+                <tr>
+                  <td>
+                  {{ 'RULES_SLIDE4' | translate }}
+                  </td>
+                  <td>
+                    <img src="imgs/HelpSlide4.png" style="height:250px;">
+                  </td>
+                </tr>
+              </table>
+            </slide>
+            <slide>
+              <table>
+                <tr>
+                  <td>
+                  {{ 'RULES_SLIDE5' | translate }}
+                  </td>
+                  <td>
+                    <img src="imgs/HelpSlide5.png" style="height:100px;">
                   </td>
                 </tr>
               </table>
@@ -92,22 +128,25 @@
   </div>
 
 <div id="gameArea">
+  <svg id="draggingLines" width="100%" height="100%" style="display:none; position:absolute; z-index: 30;">
+      <line id="horizontalDraggingLine" x1="0" y1="12.5%" x2="100%" y2="12.5%" stroke="red" stroke-width="1%" />
+      <line id="verticalDraggingLine" y1="0" x1="12.5%" y2="100%" x2="12.5%" stroke="red" stroke-width="1%" />
+    </svg>
     <div ng-repeat="row in [0, 1, 2, 3, 4, 5, 6, 7]"
-        style="position:absolute; top:{{row * 12.5}}%; left:0; width:100%; height:12.5%;">
+        style="position:absolute; top:{{row * 100/8}}%; left:0; width:100%; height:12.5%;">
       <div ng-repeat="col in [0, 1, 2, 3, 4, 5, 6, 7, 8]"
-          style="position:absolute; top:0; left:{{col * 11.8}}%; width:11.8%; height:100%;"
+          style="position:absolute; top:0; left:{{col * 100/9}}%; width:{{100 / 9}}%; height:100%;"
           ng-class="{l: col === 0, t: row === 0, r: col < 9, b: row < 8}"
-          ng-click="game.cellClicked(row, col)"
           id="{{'e2e_test_div_' + row + 'x' + col}}">
 
             <div style="width:100%; height: 100%"
                 ng-if="game.shouldShowImage(row, col)">
-              <img style="width:100%; height: 100%" ng-src="{{ class = game.showImage(row, col) }}" id="{{'img_' + row + 'x' + col}}">
+              <img style="width:100%; height: 100%" ng-src="{{ game.showImage(row, col) }}" id="{{row + '_' + col}}">
             </div>
 
       </div>
     </div>
-</div>
+</div><!--ng-click="game.cellClicked(row, col)"-->
 
 </body>
 </html>

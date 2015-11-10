@@ -54,8 +54,10 @@ module.exports = function(grunt) {
             'dist/everything.min.js',
             'game.css',
             'imgs/HelpSlide1.png',
-            'imgs/HelpSlide2.png',
+            'imgs/HelpSlide2.png'
+            'imgs/HelpSlide3.png',
             'imgs/HelpSlide4.png'
+            'imgs/HelpSlide5.png'
           ],
           network: [
             'dist/everything.min.js.map',
@@ -99,14 +101,7 @@ module.exports = function(grunt) {
 
   // Default task(s).
   grunt.registerTask('default', [
-
       'concat', 'uglify',
-      'processhtml', 'manifest',
-      ]);
-  /*grunt.registerTask('default', [
-	'karma',
-      'concat', 'uglify',
-      'processhtml', 'manifest',
-      'http-server', 'protractor']);*/
+      'processhtml', 'manifest']);//,'http-server', 'protractor'
 
 };

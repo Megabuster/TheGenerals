@@ -52,7 +52,7 @@ module aiService {
   export function createComputerMove(
       board: Board, playerIndex: number, alphaBetaLimits: IAlphaBetaLimits): IMove {
     let totalMoves: number = getPossibleMoves(board, playerIndex).length;
-    let seed: number = Math.floor((Math.random()*totalMoves)+1);
+    let seed: number = Math.floor((Math.random()*totalMoves)); //+1 why?
     /*return alphaBetaService.alphaBetaDecision(
         [null, {set: {key: 'board', value: board}}],
         playerIndex, getNextStates, getStateScoreForIndex0, null, alphaBetaLimits);*/

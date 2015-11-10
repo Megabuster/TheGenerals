@@ -24,27 +24,82 @@ var gameLogic;
     gameLogic.COLS = 9;
     function winningPiece(attacker, attacked) {
         //console.log(attacker, attacked);
+        var attackerColor = getPieceColor(attacker);
+        var attackedColor = getPieceColor(attacked);
         if (attacker === 1 && attacked === 16) {
+            //console.log("Returning", 1);
             return 1;
         }
         else if (attacker === 16 && attacked === 1) {
+            //console.log("Returning", 16);
             return 16;
         }
-        else if ((attacker === 16 || attacked === 16) && (attacker !== 0 || attacked !== 0)) {
-            return Math.min(attacker, attacker);
+        if (attacker > 15) {
+            attacker -= 15;
         }
-        else if (attacker === 2 && attacked === 30 || attacker === 30 && attacked === 2) {
-            return 2;
+        else if (attacked > 15) {
+            attacked -= 15;
         }
-        else if (((attacker - attacked) === 15 || (attacked - attacker) === 15) && attacker !== 0 && attacked !== 0) {
+        if (attacker === attacked) {
+            //console.log("Returning", 0);
             return 0;
         }
-        else if (attacker > attacked) {
-            return attacker;
+        if ((attacker === 2 && attacked === 15)) {
+            if (attackerColor === "white") {
+                //console.log("Returning", 2);
+                return 2;
+            }
+            else {
+                //console.log("Returning", 17);
+                return 17;
+            }
+        }
+        else if ((attacker === 15 && attacked === 2)) {
+            if (attackedColor === "white") {
+                //console.log("Returning", 2);
+                return 2;
+            }
+            else {
+                //console.log("Returning", 17);
+                return 17;
+            }
+        }
+        if (attacker > attacked) {
+            if (attackerColor === "white") {
+                //console.log("Returning", "attacker");
+                return attacker;
+            }
+            else {
+                //console.log("Returning", (attacker+15));
+                return (attacker += 15);
+            }
+        }
+        if (attacker < attacked) {
+            if (attackedColor === "white") {
+                //console.log("Returning", "attacked");
+                return attacked;
+            }
+            else {
+                //console.log("Returning", (attacked+15));
+                return (attacked += 15);
+            }
+        }
+        /*
+        else if((attacker === 16 || attacked === 16) && (attacker !== 0 || attacked !== 0)) { //if black flag is in a battle otherwise, it loses
+          return Math.min(attacker, attacked);
+        }
+        else if(attacker===2&&attacked===30 || attacker===30&&attacked===2) {
+          return 2;
+        }
+        else if(((attacker - attacked)===15 || (attacked - attacker)===15) && attacker!==0 && attacked!==0) {
+          return 0;
+        }
+        else if(attacker > attacked) {
+          return attacker;
         }
         else if (attacker < attacked) {
-            return attacked;
-        }
+          return attacked;
+        }*/
         /*else {
           return 0;
         }*/
@@ -99,10 +154,30 @@ var gameLogic;
             case 28: return "BS4";
             case 29: return "BS5";
             case 30: return "BSP";
+            case 31: return "white";
+            case 32: return "black";
+            case 33: return "light";
         }
     }
     gameLogic.getPieceName = getPieceName;
     /** Returns the initial Generals board, which is a 8x9 matrix containing all pieces as placed by each player. */
+    function getBlankBoard() {
+        var board = [];
+        var k = 30;
+        for (var i = 0; i < gameLogic.ROWS; i++) {
+            board[i] = [];
+            for (var j = 0; j < gameLogic.COLS; j++) {
+                /*if(k>0) {
+                  k--;
+                 board[i][j] = {name: getPieceName(k), value: k, color: getPieceColor(k)};
+                }
+                else {*/
+                board[i][j] = { name: "EMP", value: 0, color: "gray" };
+            }
+        }
+        return board;
+    }
+    gameLogic.getBlankBoard = getBlankBoard;
     function getInitialBoard() {
         /*return   [
           [{value: 16, name: "BFL", color: "black"},{value: 30, name: "BSP", color: "black"},{value: 17, name: "BPR", color: "black"},{value: 17, name: "BPR", color: "black"},{value: 17, name: "BPR", color: "black"},{value: 17, name: "BPR", color: "black"},{value: 17, name: "BPR", color: "black"},{value: 27, name: "BS3", color: "black"},{value: 0, name: "EMP", color: "gray"}],
@@ -113,25 +188,49 @@ var gameLogic;
           [{value: 2, name: "WPR", color: "white"},{value: 2, name: "WPR", color: "white"},{value: 2, name: "WPR", color: "white"},{value: 2, name: "WPR", color: "white"},{value: 2, name: "WPR", color: "white"},{value: 2, name: "WPR", color: "white"},{value: 15, name: "WSP", color: "white"},{value: 12, name: "WS3", color: "white"},{value: 0, name: "EMP", color: "gray"}],
           [{value: 5, name: "WL1", color: "white"},{value: 10, name: "WS1", color: "white"},{value: 7, name: "WMA", color: "white"},{value: 14, name: "WS5", color: "white"},{value: 6, name: "WCA", color: "white"},{value: 0, name: "EMP", color: "gray"},{value: 0, name: "EMP", color: "gray"},{value: 0, name: "EMP", color: "gray"},{value: 0, name: "EMP", color: "gray"}],
           [{value: 4, name: "WL2", color: "white"},{value: 9, name: "WCO", color: "white"},{value: 8, name: "WLC", color: "white"},{value: 15, name: "WSP", color: "white"},{value: 1, name: "WFL", color: "white"},{value: 0, name: "EMP", color: "gray"},{value: 3, name: "WSE", color: "white"},{value: 11, name: "WS2", color: "white"},{value: 13, name: "WS4", color: "white"}]];*/
-        var board = [];
-        for (var i = 0; i < gameLogic.ROWS; i++) {
-            board[i] = [];
-            for (var j = 0; j < gameLogic.COLS; j++) {
-                board[i][j] = { name: "EMP", value: 0, color: "gray" };
-            }
-        }
-        return setupInitialBoard(board);
+        var board = getBlankBoard();
+        board = [[{ "name": "EMP", "value": 0, "color": "gray" }, { "name": "BPR", "value": 17, "color": "black" }, { "name": "BS1", "value": 25, "color": "black" }, { "name": "BCA", "value": 21, "color": "black" }, { "name": "BSE", "value": 18, "color": "black" }, { "name": "BPR", "value": 17, "color": "black" }, { "name": "BPR", "value": 17, "color": "black" }, { "name": "BLC", "value": 23, "color": "black" }, { "name": "BSP", "value": 30, "color": "black" }],
+            [{ "name": "EMP", "value": 0, "color": "gray" }, { "name": "BS5", "value": 29, "color": "black" }, { "name": "BPR", "value": 17, "color": "black" }, { "name": "EMP", "value": 0, "color": "gray" }, { "name": "BFL", "value": 16, "color": "black" }, { "name": "BS2", "value": 26, "color": "black" }, { "name": "BPR", "value": 17, "color": "black" }, { "name": "BL1", "value": 20, "color": "black" }, { "name": "BS4", "value": 28, "color": "black" }],
+            [{ "name": "BMA", "value": 22, "color": "black" }, { "name": "BS3", "value": 27, "color": "black" }, { "name": "BCO", "value": 24, "color": "black" }, { "name": "EMP", "value": 0, "color": "gray" }, { "name": "BPR", "value": 17, "color": "black" }, { "name": "BL2", "value": 19, "color": "black" }, { "name": "BSP", "value": 30, "color": "black" }, { "name": "EMP", "value": 0, "color": "gray" }, { "name": "EMP", "value": 0, "color": "gray" }],
+            [{ "name": "EMP", "value": 0, "color": "gray" }, { "name": "EMP", "value": 0, "color": "gray" }, { "name": "EMP", "value": 0, "color": "gray" }, { "name": "EMP", "value": 0, "color": "gray" }, { "name": "EMP", "value": 0, "color": "gray" }, { "name": "EMP", "value": 0, "color": "gray" }, { "name": "EMP", "value": 0, "color": "gray" }, { "name": "EMP", "value": 0, "color": "gray" }, { "name": "EMP", "value": 0, "color": "gray" }],
+            [{ "name": "EMP", "value": 0, "color": "gray" }, { "name": "EMP", "value": 0, "color": "gray" }, { "name": "EMP", "value": 0, "color": "gray" }, { "name": "EMP", "value": 0, "color": "gray" }, { "name": "EMP", "value": 0, "color": "gray" }, { "name": "EMP", "value": 0, "color": "gray" }, { "name": "EMP", "value": 0, "color": "gray" }, { "name": "EMP", "value": 0, "color": "gray" }, { "name": "EMP", "value": 0, "color": "gray" }],
+            [{ "name": "WSE", "value": 3, "color": "white" }, { "name": "EMP", "value": 0, "color": "gray" }, { "name": "EMP", "value": 0, "color": "gray" }, { "name": "WMA", "value": 7, "color": "white" }, { "name": "WSP", "value": 15, "color": "white" }, { "name": "EMP", "value": 0, "color": "gray" }, { "name": "EMP", "value": 0, "color": "gray" }, { "name": "WL2", "value": 4, "color": "white" }, { "name": "WS1", "value": 10, "color": "white" }],
+            [{ "name": "WPR", "value": 2, "color": "white" }, { "name": "WLC", "value": 8, "color": "white" }, { "name": "WCA", "value": 6, "color": "white" }, { "name": "WPR", "value": 2, "color": "white" }, { "name": "WCO", "value": 9, "color": "white" }, { "name": "WS4", "value": 13, "color": "white" }, { "name": "EMP", "value": 0, "color": "gray" }, { "name": "WPR", "value": 2, "color": "white" }, { "name": "WL1", "value": 5, "color": "white" }],
+            [{ "name": "WPR", "value": 2, "color": "white" }, { "name": "EMP", "value": 0, "color": "gray" }, { "name": "WS3", "value": 12, "color": "white" }, { "name": "WFL", "value": 1, "color": "white" }, { "name": "WS2", "value": 11, "color": "white" }, { "name": "WSP", "value": 15, "color": "white" }, { "name": "WPR", "value": 2, "color": "white" }, { "name": "WS5", "value": 14, "color": "white" }, { "name": "WPR", "value": 2, "color": "white" }]];
+        return board;
+        //return setupInitialBoard(board);
     }
     gameLogic.getInitialBoard = getInitialBoard;
+    /*export function getInitialMove(board: Board) : IMove {
+      let firstOperation: IMove = [],
+        visibilityOperations: IMove = [],
+        setRandomInteger: ISetRandomInteger = {key: "", from: 0, to: 55},
+        setVisibilities: ISetVisibility[] = [],shuffleKeys: IShuffle = {keys: []},
+        i: number, j: number, k: number, assignedTiles: number, tilesToAssign: number;
+        //let temp: number = 0;
+        let randomInt: ISetRandomInteger = {key: "test", from: 0, to: 55};
+        //console.log(randomInt.test);
+        //gameService.makeMove([{setTurn: {turnIndex: 0}}, setRandomInteger("initial_x_row", 0, ROWS), setRandomInteger("initial_x_column", 0, COLS)]);
+       //setupInitialBoard(board);
+  
+        firstOperation.push({setTurn: {turnIndex: 0}});
+        firstOperation.push({set: {key: 'board', value: board}});
+        return firstOperation;
+    }*/
+    //Assign visibilities on the field depending on whose turn it currently is
+    /*export function pieceVisibility(board: Board) {
+  
+    }*/
     //Notable clauses: white can only use rows (i) 5-7 while black can only use rows (i) 0-2
     //Loops will work as such: each piece (from 1-30 in )
+    /**
+     *Let white place pieces first. All 21 pieces must be placed on the board.
+     */
+    /**
+     *Let black then add pieces before proceeding with the game (white's turn)
+     */
     function setupInitialBoard(board) {
-        /**
-         *Let white place pieces first. All 21 pieces must be placed on the board.
-         */
-        /**
-         *Let black then add pieces before proceeding with the game (white's turn)
-         */
+        //let setRandom: IMove = setRandomInteger("test", 1, 8);
         for (var i = 1; i < 16; i++) {
             if (i === 2) {
                 for (var j = 0; j < 6; j++) {
@@ -173,6 +272,8 @@ var gameLogic;
             var completed = false;
             do {
                 var rowPos = Math.floor(Math.random() * 3);
+                ;
+                //setRandomInteger(rowPos,1,2);//Math.floor(Math.random() * 3);
                 var colPos = Math.floor(Math.random() * 9);
                 //console.log("LOOP ATTEMPT", rowPos, colPos, pieceNo, board[rowPos][colPos].name);
                 if (board[rowPos][colPos].name === "EMP") {
@@ -312,6 +413,43 @@ var gameLogic;
         return possibleMoves;
     }
     gameLogic.getMovesForPiece = getMovesForPiece;
+    function getLegalMoves(board, turnIndexBeforeMove, row, col) {
+        var possibleMoves = [];
+        for (var k = 0; k < 4; k++) {
+            var deltaFrom = { row: row, col: col };
+            var deltaTo = { row: row, col: col };
+            //test all 4 possible moves and push only the ones that work
+            switch (k) {
+                case 0:
+                    deltaTo.row = deltaFrom.row - 1;
+                    deltaTo.col = deltaFrom.col;
+                    break;
+                case 1:
+                    deltaTo.row = deltaFrom.row + 1;
+                    deltaTo.col = deltaFrom.col;
+                    break;
+                case 2:
+                    deltaTo.row = deltaFrom.row;
+                    deltaTo.col = deltaFrom.col - 1;
+                    break;
+                case 3:
+                    deltaTo.row = deltaFrom.row;
+                    deltaTo.col = deltaFrom.col + 1;
+                    break;
+            }
+            try {
+                if (createMove(board, turnIndexBeforeMove, deltaFrom, deltaTo)) {
+                    var tempid = deltaTo.row + '_' + deltaTo.col;
+                    possibleMoves.push(document.getElementById(tempid));
+                }
+            }
+            catch (e) {
+            }
+        }
+        //console.log("Total moves found: ", possibleMoves.length);
+        return possibleMoves;
+    }
+    gameLogic.getLegalMoves = getLegalMoves;
     //check legality of the move without changing the game state
     function checkLegalMove(board, turnIndexBeforeMove, deltaFrom, deltaTo) {
         var pieceToMove = board[deltaFrom.row][deltaFrom.col];
@@ -336,7 +474,7 @@ var gameLogic;
             throw new Error("One space vertically or horizontally is the move limit!");
         }
         if (board[deltaFrom.row][deltaFrom.col].color === board[deltaTo.row][deltaTo.col].color) {
-            console.log("Can't eat your own piece");
+            //console.log("Can't eat your own piece");
             throw new Error("Can't eat own player's piece!");
         }
         if (getWinner(board, turnIndexBeforeMove, false) !== '') {
@@ -356,9 +494,11 @@ var gameLogic;
         checkLegalMove(board, turnIndexBeforeMove, deltaFrom, deltaTo);
         var boardAfterMove = angular.copy(board);
         //Let the fight break out. The winning piece takes over the slot
+        //console.log("Being passed into winningPiece: ", board[deltaFrom.row][deltaFrom.col].value, board[deltaTo.row][deltaTo.col].value);
         boardAfterMove[deltaTo.row][deltaTo.col].value = winningPiece(board[deltaFrom.row][deltaFrom.col].value, board[deltaTo.row][deltaTo.col].value);
         boardAfterMove[deltaTo.row][deltaTo.col].name = getPieceName(boardAfterMove[deltaTo.row][deltaTo.col].value);
         boardAfterMove[deltaTo.row][deltaTo.col].color = getPieceColor(boardAfterMove[deltaTo.row][deltaTo.col].value);
+        //console.log("after win, piece number: ", boardAfterMove[deltaTo.row][deltaTo.col].value);
         //Once the piece has moved, remove its occurrence from the previous state
         boardAfterMove[deltaFrom.row][deltaFrom.col].color = "gray";
         boardAfterMove[deltaFrom.row][deltaFrom.col].name = "EMP";
@@ -402,7 +542,7 @@ var gameLogic;
             var deltaTo = move[3].set.value;
             //let board = stateBeforeMove.board;
             //showBoardConsole(stateBeforeMove.board);
-            console.log("is this the call?");
+            //console.log("is this the call?");
             var expectedMove = createMove(board, turnIndexBeforeMove, deltaFrom, deltaTo);
             console.log(turnIndexBeforeMove, deltaFrom, deltaTo);
             if (!angular.equals(move, expectedMove)) {
@@ -424,11 +564,27 @@ var gameLogic;
     var animationEnded = false;
     var canMakeMove = false;
     var isComputerTurn = false;
-    var lastUpdateUI = null;
     var state = null;
+    var turnIndex = null;
+    var lastUpdateUI = null;
+    var deltaFromSet = false;
+    var currentDeltaFrom = { row: -1, col: -1 };
+    var currentDeltaTo = { row: -1, col: -1 };
+    game.currentPlayMode = "";
     game.isHelpModalShown = false;
+    var lastMovedPiece;
+    var draggingPiece;
+    var startingLocation;
+    var gameArea;
+    var draggingLines;
+    var verticalDraggingLine;
+    var horizontalDraggingLine;
+    var draggingStartedRowCol = { row: -1, col: -1 };
+    var nextZIndex = 29;
+    var invertRow = false;
+    var possibleMoves;
     function init() {
-        console.log("Translation of 'RULES_OF_TICTACTOE' is " + translate('RULES_OF_TICTACTOE'));
+        console.log("Translation of 'RULES_OF_GENERALS' is " + translate('RULES_OF_GENERALS'));
         resizeGameAreaService.setWidthToHeight(1);
         gameService.setGame({
             minNumberOfPlayers: 2,
@@ -440,8 +596,167 @@ var gameLogic;
         document.addEventListener("animationend", animationEndedCallback, false); // standard
         document.addEventListener("webkitAnimationEnd", animationEndedCallback, false); // WebKit
         document.addEventListener("oanimationend", animationEndedCallback, false); // Opera
+        dragAndDropService.addDragListener("gameArea", handleDragEvent);
     }
     game.init = init;
+    function handleDragEvent(type, clientX, clientY) {
+        gameArea = document.getElementById("gameArea");
+        draggingLines = document.getElementById("draggingLines");
+        verticalDraggingLine = document.getElementById("verticalDraggingLine");
+        horizontalDraggingLine = document.getElementById("horizontalDraggingLine");
+        // Center point in gameArea
+        var x = clientX - gameArea.offsetLeft;
+        var y = clientY - gameArea.offsetTop;
+        var col = Math.floor(gameLogic.COLS * x / gameArea.clientWidth);
+        var row = Math.floor(gameLogic.ROWS * y / gameArea.clientHeight);
+        // Is outside gameArea?
+        var rowInvert;
+        var colInvert;
+        if (x < 0 || y < 0 || x >= gameArea.clientWidth || y >= gameArea.clientHeight) {
+            draggingLines.style.display = "none";
+            if (draggingPiece) {
+                // Drag the piece where the touch is (without snapping to a square).
+                var size = getSquareWidthHeight();
+                setDraggingPieceTopLeft({ top: y - size.height / 2, left: x - size.width / 2 });
+            }
+            else {
+                return;
+            }
+        }
+        else {
+            // Inside gameArea. Let's find the containing square's row and col
+            //draggingLines.style.display = "inline";
+            if (invertRow === true) {
+                rowInvert = gameLogic.ROWS - row - 1;
+                colInvert = gameLogic.COLS - col - 1;
+            }
+            else {
+                rowInvert = row;
+                colInvert = col;
+            }
+            console.log("Rows and cols of current orientation", rowInvert, colInvert);
+            var centerXY = getSquareCenterXY(rowInvert, colInvert);
+            verticalDraggingLine.setAttribute("x1", centerXY.width.toString());
+            verticalDraggingLine.setAttribute("x2", centerXY.width.toString());
+            horizontalDraggingLine.setAttribute("y1", centerXY.height.toString());
+            horizontalDraggingLine.setAttribute("y2", centerXY.height.toString());
+            //console.log(type, currentDeltaFrom);
+            if (type === "touchstart" && (currentDeltaFrom.col < 0 || currentDeltaFrom.row < 0)) {
+                // drag started, use the current delta from to start (the drag start location)
+                currentDeltaFrom = { row: row, col: col };
+                var curPiece = state.board[rowInvert][colInvert];
+                draggingPiece = document.getElementById(rowInvert + '_' + colInvert);
+                console.log("Lifting", curPiece.name, "at", JSON.stringify(currentDeltaFrom), "turn", turnIndex);
+                if (draggingPiece && curPiece.name != "EMP" &&
+                    ((curPiece.color != "black" && turnIndex == 0) || curPiece.color != "white" && turnIndex == 1)) {
+                    nextZIndex++;
+                    draggingPiece.style.zIndex = ++nextZIndex + "";
+                    draggingPiece.style['width'] = '110%';
+                    draggingPiece.style['height'] = '110%';
+                    draggingPiece.style['position'] = 'absolute';
+                    draggingLines.style.display = "inline";
+                    console.log(draggingPiece.style.zIndex);
+                }
+                possibleMoves = gameLogic.getLegalMoves(state.board, turnIndex, rowInvert, colInvert);
+                for (var i = 0; i < possibleMoves.length; i++) {
+                    possibleMoves[i].style['border'] = "5px solid #99FF33";
+                }
+            }
+            if (!draggingPiece) {
+                draggingLines.style.display = "none";
+                console.log("what does this even mean");
+                return;
+            }
+        }
+        if (type === "touchend" || type === "touchcancel" || type === "touchleave" || type === "mouseup") {
+            // drag ended
+            // return the piece to its original style (then angular will take care to hide it).
+            for (var i = 0; i < possibleMoves.length; i++) {
+                possibleMoves[i].style['border'] = null;
+            }
+            possibleMoves = [];
+            console.log("let go of dragging piece, checking where it was placed");
+            setDraggingPieceTopLeft(getSquareTopLeft(currentDeltaFrom.row, currentDeltaFrom.col));
+            nextZIndex = 29;
+            lastMovedPiece = draggingPiece;
+            draggingPiece.style.zIndex = 29 + "";
+            currentDeltaTo = { row: row, col: col };
+            //console.log(draggingPiece.style.zIndex, draggingLines.style.zIndex);
+            draggingLines.style.display = "none";
+            draggingPiece.style['width'] = '100%';
+            draggingPiece.style['height'] = '100%';
+            draggingPiece.style['position'] = 'absolute';
+            //draggingPiece.style.display = "none";
+            dragDone(currentDeltaFrom, currentDeltaTo);
+            draggingPiece = null;
+            currentDeltaFrom = { row: -1, col: -1 };
+            currentDeltaTo = { row: -1, col: -1 };
+        }
+        else {
+        }
+    }
+    game.handleDragEvent = handleDragEvent;
+    function setDraggingPieceTopLeft(topLeft) {
+        var originalSize = getSquareTopLeft(currentDeltaFrom.row, currentDeltaFrom.col);
+        //startingLocation = draggingPiece;
+        draggingPiece.style.left = (topLeft.left - originalSize.left) + "px";
+        draggingPiece.style.top = (topLeft.top - originalSize.top) + "px";
+        //startingLocation.className = "EMP";
+        //state.board[currentDeltaFrom.row][currentDeltaFrom.col].name = "EMP";
+        //draggingPiece.style.animation = "lightgray";
+        //draggingPiece.className = "EMP";
+    }
+    function getSquareWidthHeight() {
+        return {
+            width: gameArea.clientWidth / gameLogic.COLS,
+            height: gameArea.clientHeight / gameLogic.ROWS
+        };
+    }
+    function getSquareTopLeft(row, col) {
+        var size = getSquareWidthHeight();
+        if (invertRow === true) {
+            row = gameLogic.ROWS - row - 1;
+            col = gameLogic.COLS - col - 1;
+        }
+        return { top: row * size.height, left: col * size.width };
+    }
+    function getSquareCenterXY(row, col) {
+        var size = getSquareWidthHeight();
+        return {
+            width: col * size.width + size.width / 2,
+            height: row * size.height + size.height / 2
+        };
+    }
+    //resizeGameAreaService.setWidthToHeight(0.5);
+    function dragDone(from, to) {
+        $rootScope.$apply(function () {
+            var msg = "Dragged piece " + from.row + "x" + from.col + " to square " + to.row + "x" + to.col;
+            log.info(msg);
+        });
+        if (invertRow === true) {
+            from.row = gameLogic.ROWS - from.row - 1;
+            from.col = gameLogic.COLS - from.col - 1;
+            to.row = gameLogic.ROWS - to.row - 1;
+            to.col = gameLogic.COLS - to.col - 1;
+        }
+        try {
+            var move = gameLogic.createMove(state.board, lastUpdateUI.turnIndexAfterMove, from, to);
+            canMakeMove = false;
+            gameService.makeMove(move);
+            //console.log(JSON.stringify(state.board));
+            log.info(["Make movement from" + from.row + "*" + from.col + " to " + to.row + "*" + to.col]);
+        }
+        catch (e) {
+            log.info(["Illegal movement from" + from.row + "*" + from.col + " to " + to.row + "*" + to.col]);
+            return;
+        }
+    }
+    //The oddity of this code has to do with how this is being called to turn the board
+    function playerTurn() {
+        if (game.currentPlayMode)
+            return true; //white or 0
+    }
+    game.playerTurn = playerTurn;
     function animationEndedCallback() {
         $rootScope.$apply(function () {
             log.info("Animation ended");
@@ -452,18 +767,30 @@ var gameLogic;
         });
     }
     function sendComputerMove() {
+        console.log("Computer making move");
         gameService.makeMove(aiService.findComputerMove(lastUpdateUI));
     }
     function updateUI(params) {
-        log.info("Game got updateUI:", params);
+        log.info("Calling updateUI:", params);
         animationEnded = false;
         lastUpdateUI = params;
         state = params.stateAfterMove;
+        game.currentPlayMode = params.playMode;
+        //$rootScope.state = state;
+        //console.log("test updateUI");
         if (!state.board) {
             state.board = gameLogic.getInitialBoard();
         }
+        rotateGameBoard(params);
+        /*if (!state.board && params.yourPlayerIndex === params.turnIndexAfterMove) {
+              state.board = gameLogic.getInitialBoard();
+              //let move = gameLogic.getInitialMove();
+              //gameService.makeMove(move);
+        }*/
+        //gameLogic.showBoardConsole(state.board);
         canMakeMove = params.turnIndexAfterMove >= 0 &&
             params.yourPlayerIndex === params.turnIndexAfterMove; // it's my turn
+        turnIndex = params.turnIndexAfterMove;
         // Is it the computer's turn?
         isComputerTurn = canMakeMove &&
             params.playersInfo[params.yourPlayerIndex].playerId === '';
@@ -481,56 +808,165 @@ var gameLogic;
             }
         }
     }
+    function rotateGameBoard(params) {
+        console.log(game.currentPlayMode);
+        if (params.playMode !== "single-player" && params.playMode !== "playAgainstTheComputer") {
+            var gameBoard = document.getElementById("gameArea");
+            switch (params.yourPlayerIndex) {
+                case 0:
+                    console.log("White player");
+                    gameBoard.className = "rotateW";
+                    invertRow = false;
+                    for (var i = 0; i < gameLogic.ROWS; i++) {
+                        for (var j = 0; j < gameLogic.COLS; j++) {
+                            var draggingPiece_1 = document.getElementById(i + '_' + j);
+                            var curPiece = params.stateAfterMove.board[i][j];
+                            draggingPiece_1.className = "";
+                        }
+                    }
+                    break;
+                case 1:
+                    console.log("Black player");
+                    gameBoard.className = "rotateB";
+                    invertRow = true;
+                    for (var i = 0; i < gameLogic.ROWS; i++) {
+                        for (var j = 0; j < gameLogic.COLS; j++) {
+                            var draggingPiece_2 = document.getElementById(i + '_' + j);
+                            var curPiece = params.stateAfterMove.board[i][j];
+                            if (curPiece.color === "black") {
+                                draggingPiece_2.className = "TFL";
+                            }
+                        }
+                    }
+                    break;
+            }
+        }
+    }
+    function myPiece(row, col, playerId) {
+        var myColor = " ";
+        if (playerId === 0) {
+            myColor = "white";
+        }
+        else if (playerId === 1) {
+            myColor = "black";
+        }
+        else {
+            console.log("Illegal player ID");
+        }
+        if (state.board[row][col].color !== myColor) {
+            console.log("Not your piece to move");
+            return false;
+        }
+        return true; /*
+        let possibleMoves: IMove[] = gameLogic.getMovesForPiece(state.board, playerId, row, col);
+        if (possibleMoves.length == 0){
+          console.log("You have nowhere to move that piece");
+          return false;
+        }
+        console.log("You can move the piece from ", row, col, "player ", playerId);
+        return true;*/
+    }
     function cellClicked(row, col) {
-        log.info("Clicked on cell:", row, col);
+        log.info(["Clicked on cell:", row, col]);
         if (window.location.search === '?throwException') {
             throw new Error("Throwing the error because URL has '?throwException'");
         }
         if (!canMakeMove) {
             return;
         }
+        //gameLogic.showBoardConsole(state.board);
         try {
-            var move = gameLogic.createMove(state.board, row, col, lastUpdateUI.turnIndexAfterMove);
-            canMakeMove = false; // to prevent making another move
-            gameService.makeMove(move);
+            console.log("About to decide on cell click - delta and is it my piece?", deltaFromSet, myPiece(row, col, turnIndex));
+            if (deltaFromSet === false && myPiece(row, col, turnIndex) == true) {
+                console.log("Able to make move from location");
+                currentDeltaFrom.row = row;
+                currentDeltaFrom.col = col;
+                deltaFromSet = true;
+                return;
+            }
+            else if (deltaFromSet === true) {
+                if (currentDeltaFrom.row === row && currentDeltaFrom.col === col) {
+                    //this means that we clicked on the same piece again (negate the last click to allow for a new choice)
+                    deltaFromSet = false;
+                    currentDeltaFrom.row = -1;
+                    currentDeltaFrom.col = -1;
+                    return;
+                }
+                else {
+                    console.log("deltaFrom is currently: ", currentDeltaFrom.row, currentDeltaFrom.col, " with turn index ", turnIndex);
+                    var move = gameLogic.createMove(state.board, lastUpdateUI.turnIndexAfterMove, currentDeltaFrom, { row: row, col: col });
+                    canMakeMove = false; // to prevent making another move
+                    deltaFromSet = false;
+                    gameService.makeMove(move);
+                    console.log("made move to: ", row, col);
+                    return;
+                }
+            }
+            else {
+                console.log("erroneous cell click result");
+                return;
+            }
         }
         catch (e) {
-            log.info(["Cell is already full in position:", row, col]);
+            log.info(["Caught cell click error"]);
             return;
         }
     }
     game.cellClicked = cellClicked;
     function shouldShowImage(row, col) {
         var cell = state.board[row][col];
-        return cell !== "";
+        return cell.name !== "";
     }
     game.shouldShowImage = shouldShowImage;
-    function isPieceX(row, col) {
-        return state.board[row][col] === 'X';
+    function showImage(row, col) {
+        var cell = state.board[row][col];
+        var imageValue = cell.value;
+        var gameBoard = document.getElementById("gameArea");
+        var draggingPiece = document.getElementById(row + '_' + col);
+        if (turnIndex === 0 || game.currentPlayMode === "playAgainstTheComputer") {
+            if (cell.color === "black") {
+                //code for black pieces
+                //draggingPiece.className = "black";
+                imageValue = 32;
+            }
+        }
+        else if (turnIndex === 1 && cell.color === "white") {
+            //code for white pieces
+            //draggingPiece.className = "white";
+            imageValue = 31;
+        }
+        /*if(invertRow === true && cell.value >=16 && cell.value <=30) { //black's turn, so make active pieces black
+          draggingPiece.className = "TFL";
+          //draggingPiece.className = "invert";
+        }*/
+        return getPiece(imageValue);
     }
-    game.isPieceX = isPieceX;
-    function isPieceO(row, col) {
-        return state.board[row][col] === 'O';
+    game.showImage = showImage;
+    function getPiece(piece) {
+        //return gameLogic.getPieceName(piece);
+        if (piece >= 16 && piece <= 30) {
+            piece -= 15;
+        }
+        return 'imgs/' + gameLogic.getPieceName(piece) + '.png';
     }
-    game.isPieceO = isPieceO;
-    function shouldSlowlyAppear(row, col) {
-        return !animationEnded &&
-            state.delta &&
-            state.delta.row === row && state.delta.col === col;
+    function getPieceByPosition(row, col) {
+        return gameLogic.getPieceName(state.board[row][col].value);
     }
-    game.shouldSlowlyAppear = shouldSlowlyAppear;
 })(game || (game = {}));
 angular.module('myApp', ['ngTouch', 'ui.bootstrap', 'gameServices'])
     .run(function () {
     $rootScope['game'] = game;
     translate.setLanguage('en', {
-        RULES_OF_TICTACTOE: "Rules of TicTacToe",
-        RULES_SLIDE1: "You and your opponent take turns to mark the grid in an empty spot. The first mark is X, then O, then X, then O, etc.",
-        RULES_SLIDE2: "The first to mark a whole row, column or diagonal wins.",
+        RULES_OF_GENERALS: "Rules of Game of The Generals",
+        RULES_SLIDE1: "Start with a field of arbitrarily placed pieces.",
+        RULES_SLIDE2: "During your turn, you can move any piece one step vertically or horizontally.",
+        RULES_SLIDE3: "Take the enemy flag (without knowing which piece it is) before losing yours.",
+        RULES_SLIDE4: "Alternatively, send your own flag to the enemy backrow and win if it survives one turn. Be careful since all pieces can kill a flag, including an attacking flag.",
+        RULES_SLIDE5: "Spies are stronger than all other pieces, but is the only piece besides the flag that loses to the private. Starred pieces (generals) are otherwise the strongest, going downwards by total stars.",
         CLOSE: "Close"
     });
     game.init();
-});
+}); //]
 ;var aiService;
 (function (aiService) {
     /**
@@ -583,7 +1019,7 @@ angular.module('myApp', ['ngTouch', 'ui.bootstrap', 'gameServices'])
     aiService.findComputerMove = findComputerMove;
     function createComputerMove(board, playerIndex, alphaBetaLimits) {
         var totalMoves = getPossibleMoves(board, playerIndex).length;
-        var seed = Math.floor((Math.random() * totalMoves) + 1);
+        var seed = Math.floor((Math.random() * totalMoves)); //+1 why?
         /*return alphaBetaService.alphaBetaDecision(
             [null, {set: {key: 'board', value: board}}],
             playerIndex, getNextStates, getStateScoreForIndex0, null, alphaBetaLimits);*/

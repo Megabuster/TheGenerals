@@ -429,6 +429,44 @@ module gameLogic {
      console.log("Total moves found: ", possibleMoves.length);
      return possibleMoves;
    }
+   export function getLegalMoves(board: Board, turnIndexBeforeMove: number, row: number, col: number): HTMLElement[] {
+     let possibleMoves: HTMLElement[] = [];
+
+         for (let k = 0; k < 4; k++) {
+           let deltaFrom: BoardDelta = {row: row, col: col};
+           let deltaTo: BoardDelta = {row: row, col: col};
+           //test all 4 possible moves and push only the ones that work
+           switch(k) {
+             case 0:
+               deltaTo.row = deltaFrom.row-1;
+               deltaTo.col = deltaFrom.col;
+               break;
+             case 1:
+               deltaTo.row = deltaFrom.row+1;
+               deltaTo.col = deltaFrom.col;
+               break;
+             case 2:
+               deltaTo.row = deltaFrom.row;
+               deltaTo.col = deltaFrom.col-1;
+               break;
+             case 3:
+               deltaTo.row = deltaFrom.row;
+               deltaTo.col = deltaFrom.col+1;
+               break;
+           }
+
+           try {
+             if(createMove(board, turnIndexBeforeMove, deltaFrom, deltaTo)) {
+               var tempid = deltaTo.row + '_' + deltaTo.col;
+               possibleMoves.push(document.getElementById(tempid));
+             }
+           } catch (e) {
+             // The cell in that position was full.
+       }
+     }
+     //console.log("Total moves found: ", possibleMoves.length);
+     return possibleMoves;
+   }
    //check legality of the move without changing the game state
    export function checkLegalMove(board: Board, turnIndexBeforeMove: number, deltaFrom : BoardDelta, deltaTo: BoardDelta) : boolean {
      let pieceToMove: piece = board[deltaFrom.row][deltaFrom.col];

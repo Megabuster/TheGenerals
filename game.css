@@ -13,23 +13,20 @@
   border-top: 4pt solid tan;
 }
 
-.empty {
-   background: lightgray
-}
 .black {
-  background: url(imgs/black.png);
+  background: black;
   background-size:   cover;
   background-position: center center;
 }
 
 .white {
-  background: url(imgs/white.png);
+  background-color: white;
   background-size:   cover;
   background-position: center center;
 }
 
 .EMP {
-  background: url(imgs/EMP.png);
+  background: lightgray;
   background-size:   cover;
   background-position: center center;
 }
@@ -38,7 +35,19 @@
   background-size:   cover;
   background-position: center center;
 }
-
+.TFL {
+  -webkit-transform: rotate(180deg);
+	-moz-transform: rotate(180deg);
+	-ms-transform: rotate(180deg);
+	-o-transform: rotate(180deg);
+	transform: rotate(180deg);
+  -webkit-filter: invert(1);
+   filter: invert(1);
+}
+.invert {
+  -webkit-filter: invert(1);
+   filter: invert(1);
+}
 .WPR {
   background: url(imgs/WPR.png);
   background-size:   cover;
@@ -233,6 +242,17 @@
 	-ms-transform: rotate(180deg);
 	-o-transform: rotate(180deg);
 	transform: rotate(180deg);
+}
+.flipImg {
+  -moz-transform: scaleY(-1);
+    -o-transform: scaleY(-1);
+    -webkit-transform: scaleY(-1);
+    transform: scaleY(-1);
+    filter: FlipV;
+    -ms-filter: "FlipV";
+}
+.noBorder {
+  border: 0;
 }
 @-webkit-keyframes slowlyAppear {
   from {opacity: 0.1;}

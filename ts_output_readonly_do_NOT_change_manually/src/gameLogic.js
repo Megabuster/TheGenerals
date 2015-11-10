@@ -413,6 +413,43 @@ var gameLogic;
         return possibleMoves;
     }
     gameLogic.getMovesForPiece = getMovesForPiece;
+    function getLegalMoves(board, turnIndexBeforeMove, row, col) {
+        var possibleMoves = [];
+        for (var k = 0; k < 4; k++) {
+            var deltaFrom = { row: row, col: col };
+            var deltaTo = { row: row, col: col };
+            //test all 4 possible moves and push only the ones that work
+            switch (k) {
+                case 0:
+                    deltaTo.row = deltaFrom.row - 1;
+                    deltaTo.col = deltaFrom.col;
+                    break;
+                case 1:
+                    deltaTo.row = deltaFrom.row + 1;
+                    deltaTo.col = deltaFrom.col;
+                    break;
+                case 2:
+                    deltaTo.row = deltaFrom.row;
+                    deltaTo.col = deltaFrom.col - 1;
+                    break;
+                case 3:
+                    deltaTo.row = deltaFrom.row;
+                    deltaTo.col = deltaFrom.col + 1;
+                    break;
+            }
+            try {
+                if (createMove(board, turnIndexBeforeMove, deltaFrom, deltaTo)) {
+                    var tempid = deltaTo.row + '_' + deltaTo.col;
+                    possibleMoves.push(document.getElementById(tempid));
+                }
+            }
+            catch (e) {
+            }
+        }
+        //console.log("Total moves found: ", possibleMoves.length);
+        return possibleMoves;
+    }
+    gameLogic.getLegalMoves = getLegalMoves;
     //check legality of the move without changing the game state
     function checkLegalMove(board, turnIndexBeforeMove, deltaFrom, deltaTo) {
         var pieceToMove = board[deltaFrom.row][deltaFrom.col];

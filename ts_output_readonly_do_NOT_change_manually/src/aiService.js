@@ -50,7 +50,7 @@ var aiService;
     aiService.findComputerMove = findComputerMove;
     function createComputerMove(board, playerIndex, alphaBetaLimits) {
         var totalMoves = getPossibleMoves(board, playerIndex).length;
-        var seed = Math.floor((Math.random() * totalMoves) + 1);
+        var seed = Math.floor((Math.random() * totalMoves)); //+1 why?
         /*return alphaBetaService.alphaBetaDecision(
             [null, {set: {key: 'board', value: board}}],
             playerIndex, getNextStates, getStateScoreForIndex0, null, alphaBetaLimits);*/
