@@ -189,34 +189,51 @@ var gameLogic;
           [{value: 5, name: "WL1", color: "white"},{value: 10, name: "WS1", color: "white"},{value: 7, name: "WMA", color: "white"},{value: 14, name: "WS5", color: "white"},{value: 6, name: "WCA", color: "white"},{value: 0, name: "EMP", color: "gray"},{value: 0, name: "EMP", color: "gray"},{value: 0, name: "EMP", color: "gray"},{value: 0, name: "EMP", color: "gray"}],
           [{value: 4, name: "WL2", color: "white"},{value: 9, name: "WCO", color: "white"},{value: 8, name: "WLC", color: "white"},{value: 15, name: "WSP", color: "white"},{value: 1, name: "WFL", color: "white"},{value: 0, name: "EMP", color: "gray"},{value: 3, name: "WSE", color: "white"},{value: 11, name: "WS2", color: "white"},{value: 13, name: "WS4", color: "white"}]];*/
         var board = getBlankBoard();
-        board = [[{ "name": "EMP", "value": 0, "color": "gray" }, { "name": "BPR", "value": 17, "color": "black" }, { "name": "BS1", "value": 25, "color": "black" }, { "name": "BCA", "value": 21, "color": "black" }, { "name": "BSE", "value": 18, "color": "black" }, { "name": "BPR", "value": 17, "color": "black" }, { "name": "BPR", "value": 17, "color": "black" }, { "name": "BLC", "value": 23, "color": "black" }, { "name": "BSP", "value": 30, "color": "black" }],
-            [{ "name": "EMP", "value": 0, "color": "gray" }, { "name": "BS5", "value": 29, "color": "black" }, { "name": "BPR", "value": 17, "color": "black" }, { "name": "EMP", "value": 0, "color": "gray" }, { "name": "BFL", "value": 16, "color": "black" }, { "name": "BS2", "value": 26, "color": "black" }, { "name": "BPR", "value": 17, "color": "black" }, { "name": "BL1", "value": 20, "color": "black" }, { "name": "BS4", "value": 28, "color": "black" }],
-            [{ "name": "BMA", "value": 22, "color": "black" }, { "name": "BS3", "value": 27, "color": "black" }, { "name": "BCO", "value": 24, "color": "black" }, { "name": "EMP", "value": 0, "color": "gray" }, { "name": "BPR", "value": 17, "color": "black" }, { "name": "BL2", "value": 19, "color": "black" }, { "name": "BSP", "value": 30, "color": "black" }, { "name": "EMP", "value": 0, "color": "gray" }, { "name": "EMP", "value": 0, "color": "gray" }],
-            [{ "name": "EMP", "value": 0, "color": "gray" }, { "name": "EMP", "value": 0, "color": "gray" }, { "name": "EMP", "value": 0, "color": "gray" }, { "name": "EMP", "value": 0, "color": "gray" }, { "name": "EMP", "value": 0, "color": "gray" }, { "name": "EMP", "value": 0, "color": "gray" }, { "name": "EMP", "value": 0, "color": "gray" }, { "name": "EMP", "value": 0, "color": "gray" }, { "name": "EMP", "value": 0, "color": "gray" }],
-            [{ "name": "EMP", "value": 0, "color": "gray" }, { "name": "EMP", "value": 0, "color": "gray" }, { "name": "EMP", "value": 0, "color": "gray" }, { "name": "EMP", "value": 0, "color": "gray" }, { "name": "EMP", "value": 0, "color": "gray" }, { "name": "EMP", "value": 0, "color": "gray" }, { "name": "EMP", "value": 0, "color": "gray" }, { "name": "EMP", "value": 0, "color": "gray" }, { "name": "EMP", "value": 0, "color": "gray" }],
-            [{ "name": "WSE", "value": 3, "color": "white" }, { "name": "EMP", "value": 0, "color": "gray" }, { "name": "EMP", "value": 0, "color": "gray" }, { "name": "WMA", "value": 7, "color": "white" }, { "name": "WSP", "value": 15, "color": "white" }, { "name": "EMP", "value": 0, "color": "gray" }, { "name": "EMP", "value": 0, "color": "gray" }, { "name": "WL2", "value": 4, "color": "white" }, { "name": "WS1", "value": 10, "color": "white" }],
-            [{ "name": "WPR", "value": 2, "color": "white" }, { "name": "WLC", "value": 8, "color": "white" }, { "name": "WCA", "value": 6, "color": "white" }, { "name": "WPR", "value": 2, "color": "white" }, { "name": "WCO", "value": 9, "color": "white" }, { "name": "WS4", "value": 13, "color": "white" }, { "name": "EMP", "value": 0, "color": "gray" }, { "name": "WPR", "value": 2, "color": "white" }, { "name": "WL1", "value": 5, "color": "white" }],
-            [{ "name": "WPR", "value": 2, "color": "white" }, { "name": "EMP", "value": 0, "color": "gray" }, { "name": "WS3", "value": 12, "color": "white" }, { "name": "WFL", "value": 1, "color": "white" }, { "name": "WS2", "value": 11, "color": "white" }, { "name": "WSP", "value": 15, "color": "white" }, { "name": "WPR", "value": 2, "color": "white" }, { "name": "WS5", "value": 14, "color": "white" }, { "name": "WPR", "value": 2, "color": "white" }]];
+        /*board = [[{"name":"EMP","value":0,"color":"gray"},{"name":"BPR","value":17,"color":"black"},{"name":"BS1","value":25,"color":"black"},{"name":"BCA","value":21,"color":"black"},{"name":"BSE","value":18,"color":"black"},{"name":"BPR","value":17,"color":"black"},{"name":"BPR","value":17,"color":"black"},{"name":"BLC","value":23,"color":"black"},{"name":"BSP","value":30,"color":"black"}],
+        [{"name":"EMP","value":0,"color":"gray"},{"name":"BS5","value":29,"color":"black"},{"name":"BPR","value":17,"color":"black"},{"name":"EMP","value":0,"color":"gray"},{"name":"BFL","value":16,"color":"black"},{"name":"BS2","value":26,"color":"black"},{"name":"BPR","value":17,"color":"black"},{"name":"BL1","value":20,"color":"black"},{"name":"BS4","value":28,"color":"black"}],
+        [{"name":"BMA","value":22,"color":"black"},{"name":"BS3","value":27,"color":"black"},{"name":"BCO","value":24,"color":"black"},{"name":"EMP","value":0,"color":"gray"},{"name":"BPR","value":17,"color":"black"},{"name":"BL2","value":19,"color":"black"},{"name":"BSP","value":30,"color":"black"},{"name":"EMP","value":0,"color":"gray"},{"name":"EMP","value":0,"color":"gray"}],
+        [{"name":"EMP","value":0,"color":"gray"},{"name":"EMP","value":0,"color":"gray"},{"name":"EMP","value":0,"color":"gray"},{"name":"EMP","value":0,"color":"gray"},{"name":"EMP","value":0,"color":"gray"},{"name":"EMP","value":0,"color":"gray"},{"name":"EMP","value":0,"color":"gray"},{"name":"EMP","value":0,"color":"gray"},{"name":"EMP","value":0,"color":"gray"}],
+        [{"name":"EMP","value":0,"color":"gray"},{"name":"EMP","value":0,"color":"gray"},{"name":"EMP","value":0,"color":"gray"},{"name":"EMP","value":0,"color":"gray"},{"name":"EMP","value":0,"color":"gray"},{"name":"EMP","value":0,"color":"gray"},{"name":"EMP","value":0,"color":"gray"},{"name":"EMP","value":0,"color":"gray"},{"name":"EMP","value":0,"color":"gray"}],
+        [{"name":"WSE","value":3,"color":"white"},{"name":"EMP","value":0,"color":"gray"},{"name":"EMP","value":0,"color":"gray"},{"name":"WMA","value":7,"color":"white"},{"name":"WSP","value":15,"color":"white"},{"name":"EMP","value":0,"color":"gray"},{"name":"EMP","value":0,"color":"gray"},{"name":"WL2","value":4,"color":"white"},{"name":"WS1","value":10,"color":"white"}],
+        [{"name":"WPR","value":2,"color":"white"},{"name":"WLC","value":8,"color":"white"},{"name":"WCA","value":6,"color":"white"},{"name":"WPR","value":2,"color":"white"},{"name":"WCO","value":9,"color":"white"},{"name":"WS4","value":13,"color":"white"},{"name":"EMP","value":0,"color":"gray"},{"name":"WPR","value":2,"color":"white"},{"name":"WL1","value":5,"color":"white"}],
+        [{"name":"WPR","value":2,"color":"white"},{"name":"EMP","value":0,"color":"gray"},{"name":"WS3","value":12,"color":"white"},{"name":"WFL","value":1,"color":"white"},{"name":"WS2","value":11,"color":"white"},{"name":"WSP","value":15,"color":"white"},{"name":"WPR","value":2,"color":"white"},{"name":"WS5","value":14,"color":"white"},{"name":"WPR","value":2,"color":"white"}]];
+ */
+        //let visibilites: ISetVisibility[];// = {key: "white", visibleToPlayerIndexes: [1]};
+        board = setupInitialBoard(board);
+        gameLogic.initialBoard = board;
         return board;
         //return setupInitialBoard(board);
     }
     gameLogic.getInitialBoard = getInitialBoard;
-    /*export function getInitialMove(board: Board) : IMove {
-      let firstOperation: IMove = [],
-        visibilityOperations: IMove = [],
-        setRandomInteger: ISetRandomInteger = {key: "", from: 0, to: 55},
-        setVisibilities: ISetVisibility[] = [],shuffleKeys: IShuffle = {keys: []},
-        i: number, j: number, k: number, assignedTiles: number, tilesToAssign: number;
+    function getInitialMove(board) {
+        //let board: Board = getInitialBoard();
+        var firstOperation = [], addVisibilities = [], 
+        //setRandomInteger: ISetRandomInteger = {key: "", from: 0, to: 55},
+        setVisibilities = [];
         //let temp: number = 0;
-        let randomInt: ISetRandomInteger = {key: "test", from: 0, to: 55};
+        var randomInt = { key: "test", from: 0, to: 55 };
         //console.log(randomInt.test);
         //gameService.makeMove([{setTurn: {turnIndex: 0}}, setRandomInteger("initial_x_row", 0, ROWS), setRandomInteger("initial_x_column", 0, COLS)]);
-       //setupInitialBoard(board);
-  
-        firstOperation.push({setTurn: {turnIndex: 0}});
-        firstOperation.push({set: {key: 'board', value: board}});
-        return firstOperation;
-    }*/
+        //setupInitialBoard(board);
+        var visibilites;
+        var k = 0;
+        for (var i = 0; i < gameLogic.ROWS; i++) {
+            for (var j = 0; j < gameLogic.COLS; j++) {
+                if (board[i][j].color == "black") {
+                    setVisibilities[k] = { key: board[i][j].name, visibleToPlayerIndexes: [1] };
+                }
+                else if (board[i][j].color == "white") {
+                    setVisibilities[k] = { key: board[i][j].name, visibleToPlayerIndexes: [0] };
+                }
+                addVisibilities.push({ setVisibility: setVisibilities[k] });
+                k++;
+            }
+        }
+        //firstOperation.push({setTurn: {turnIndex: 0}});
+        firstOperation.push({ set: { key: 'board', value: board } });
+        return firstOperation.concat(addVisibilities);
+    }
+    gameLogic.getInitialMove = getInitialMove;
     //Assign visibilities on the field depending on whose turn it currently is
     /*export function pieceVisibility(board: Board) {
   
@@ -308,7 +325,6 @@ var gameLogic;
     gameLogic.addToBoard = addToBoard;
     //Display current board configuration within the console
     function showBoardConsole(board) {
-        console.log("Displaying board layout");
         for (var i = 0; i < gameLogic.ROWS; i++) {
             var rowName = "";
             for (var j = 0; j < gameLogic.COLS; j++) {
@@ -317,7 +333,6 @@ var gameLogic;
             }
             console.log(rowName);
         }
-        console.log("End display board");
     }
     gameLogic.showBoardConsole = showBoardConsole;
     function getWinner(board, turnIndexOfMove, afterMove) {
@@ -486,10 +501,15 @@ var gameLogic;
     }
     gameLogic.checkLegalMove = checkLegalMove;
     function createMove(board, turnIndexBeforeMove, deltaFrom, deltaTo) {
+        var initialMove;
+        //console.log("Display existing board");
+        //console.log(JSON.stringify(board));
         if (!board) {
             console.log("building board from createMove");
             // Initially (at the beginning of the match), the board in state is undefined.
-            board = getInitialBoard();
+            board = gameLogic.initialBoard;
+            initialMove = getInitialMove(board);
+            console.log("Created initial move");
         }
         checkLegalMove(board, turnIndexBeforeMove, deltaFrom, deltaTo);
         var boardAfterMove = angular.copy(board);
@@ -517,6 +537,8 @@ var gameLogic;
         }
         //firstOperation = {setTurn: {turnIndex: (1 - turnIndexBeforeMove) }};
         //let delta: BoardDelta = {row: row, col: col};
+        //let visibility: ISetVisibility = {key: "white", visibleToPlayerIndexes: [1]};
+        //firstOperation.setVisibility = visibility;
         return [firstOperation,
             { set: { key: 'board', value: boardAfterMove } },
             { set: { key: 'deltaFrom', value: { row: deltaFrom.row, col: deltaFrom.col } } },

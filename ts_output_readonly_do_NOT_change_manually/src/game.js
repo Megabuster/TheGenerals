@@ -130,6 +130,7 @@ var game;
             draggingPiece = null;
             currentDeltaFrom = { row: -1, col: -1 };
             currentDeltaTo = { row: -1, col: -1 };
+            console.log("End of touch phase");
         }
         else {
         }
@@ -179,6 +180,8 @@ var game;
             to.col = gameLogic.COLS - to.col - 1;
         }
         try {
+            console.log("Attempting to create move after touch has ended");
+            console.log(JSON.stringify(state.board));
             var move = gameLogic.createMove(state.board, lastUpdateUI.turnIndexAfterMove, from, to);
             canMakeMove = false;
             gameService.makeMove(move);
@@ -214,19 +217,16 @@ var game;
         animationEnded = false;
         lastUpdateUI = params;
         state = params.stateAfterMove;
+        game.yourPlayerIndex = params.yourPlayerIndex;
         game.currentPlayMode = params.playMode;
-        //$rootScope.state = state;
-        //console.log("test updateUI");
+        if (params.turnIndexAfterMove < 0) {
+            revealPiecesEndGame(state.board);
+        }
         if (!state.board) {
             state.board = gameLogic.getInitialBoard();
+            var move = gameLogic.getInitialMove(state.board);
         }
         rotateGameBoard(params);
-        /*if (!state.board && params.yourPlayerIndex === params.turnIndexAfterMove) {
-              state.board = gameLogic.getInitialBoard();
-              //let move = gameLogic.getInitialMove();
-              //gameService.makeMove(move);
-        }*/
-        //gameLogic.showBoardConsole(state.board);
         canMakeMove = params.turnIndexAfterMove >= 0 &&
             params.yourPlayerIndex === params.turnIndexAfterMove; // it's my turn
         turnIndex = params.turnIndexAfterMove;
@@ -249,7 +249,7 @@ var game;
     }
     function rotateGameBoard(params) {
         console.log(game.currentPlayMode);
-        if (params.playMode !== "single-player" && params.playMode !== "playAgainstTheComputer") {
+        if (params.playMode !== "playAgainstTheComputer") {
             var gameBoard = document.getElementById("gameArea");
             switch (params.yourPlayerIndex) {
                 case 0:
@@ -357,7 +357,7 @@ var game;
         return cell.name !== "";
     }
     game.shouldShowImage = shouldShowImage;
-    function showImage(row, col) {
+    function showImage(row, col, playerIndex) {
         var cell = state.board[row][col];
         var imageValue = cell.value;
         var gameBoard = document.getElementById("gameArea");
@@ -374,6 +374,28 @@ var game;
             //draggingPiece.className = "white";
             imageValue = 31;
         }
+        //console.log("My index is", playerIndex);
+        /*if (currentPlayMode==="playAgainstTheComputer") {
+          if(playerIndex === 1) {
+            imageValue = 31;
+          }
+          else if (playerIndex === 0){
+            imageValue = 32;
+          }
+        }
+        else*/ /*if(playerIndex === 0) { //white's turn or cpu game = keep black's pieces hidden
+          if(cell.color === "black") {
+            //code for black pieces
+            //draggingPiece.className = "black";
+            imageValue = 32;
+          }
+        }
+        else if(playerIndex === 1 && cell.color === "white") {
+              //code for white pieces
+              //draggingPiece.className = "white";
+              imageValue = 31;
+    
+        }*/
         /*if(invertRow === true && cell.value >=16 && cell.value <=30) { //black's turn, so make active pieces black
           draggingPiece.className = "TFL";
           //draggingPiece.className = "invert";
@@ -381,6 +403,23 @@ var game;
         return getPiece(imageValue);
     }
     game.showImage = showImage;
+    function revealPiecesEndGame(board) {
+        for (var i = 0; i < gameLogic.ROWS; i++) {
+            for (var j = 0; j < gameLogic.COLS; j++) {
+                var draggingPiece_3 = document.getElementById(i + '_' + j);
+                var curPiece = board[i][j];
+                if (curPiece.color === "black") {
+                    if (game.currentPlayMode == "playAgainstTheComputer") {
+                        draggingPiece_3.className = getPieceByPosition(i, j);
+                    }
+                    else {
+                        draggingPiece_3.className = "TFL";
+                    }
+                }
+            }
+        }
+    }
+    game.revealPiecesEndGame = revealPiecesEndGame;
     function getPiece(piece) {
         //return gameLogic.getPieceName(piece);
         if (piece >= 16 && piece <= 30) {
@@ -391,6 +430,12 @@ var game;
     function getPieceByPosition(row, col) {
         return gameLogic.getPieceName(state.board[row][col].value);
     }
+    function shouldSlowlyAppear(row, col) {
+        return !animationEnded &&
+            state.delta &&
+            state.delta.row === row && state.delta.col === col;
+    }
+    game.shouldSlowlyAppear = shouldSlowlyAppear;
 })(game || (game = {}));
 angular.module('myApp', ['ngTouch', 'ui.bootstrap', 'gameServices'])
     .run(function () {

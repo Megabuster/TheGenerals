@@ -26,6 +26,7 @@ module game {
   var nextZIndex = 29;
   let invertRow: boolean = false;
   let possibleMoves: HTMLElement[];
+  export let yourPlayerIndex: number;
 
   interface WidthHeight {
     width: number;
@@ -155,7 +156,7 @@ module game {
           draggingPiece = null;
           currentDeltaFrom = {row: -1, col: -1};
           currentDeltaTo = {row: -1, col: -1};
-
+          console.log("End of touch phase");
         }
         else {
           //setDraggingPieceTopLeft(getSquareTopLeft(row, col));
@@ -207,8 +208,11 @@ module game {
           to.col = gameLogic.COLS - to.col - 1;
         }
         try {
+          console.log("Attempting to create move after touch has ended");
+          console.log(JSON.stringify(state.board));
           let move = gameLogic.createMove(state.board, lastUpdateUI.turnIndexAfterMove, from, to);
           canMakeMove = false;
+
           gameService.makeMove(move);
           //console.log(JSON.stringify(state.board));
           log.info(["Make movement from" + from.row + "*" + from.col + " to " + to.row + "*" + to.col]);
@@ -243,30 +247,20 @@ module game {
     animationEnded = false;
     lastUpdateUI = params;
     state = params.stateAfterMove;
+    yourPlayerIndex = params.yourPlayerIndex;
 
     currentPlayMode = params.playMode;
 
-    //$rootScope.state = state;
-    //console.log("test updateUI");
+    if(params.turnIndexAfterMove<0) {
+      revealPiecesEndGame(state.board);
+    }
+
     if (!state.board) {
       state.board = gameLogic.getInitialBoard();
-      //console.log(JSON.stringify(state.board));
-      //if(params.yourPlayerIndex === params.turnIndexAfterMove) {
-        //let move = gameLogic.getInitialMove(state.board);
-        //console.log(JSON.stringify(move));
-        //gameService.makeMove(move);
-      //}
+      let move = gameLogic.getInitialMove(state.board);
     }
 
     rotateGameBoard(params);
-
-    /*if (!state.board && params.yourPlayerIndex === params.turnIndexAfterMove) {
-          state.board = gameLogic.getInitialBoard();
-          //let move = gameLogic.getInitialMove();
-          //gameService.makeMove(move);
-    }*/
-
-    //gameLogic.showBoardConsole(state.board);
 
     canMakeMove = params.turnIndexAfterMove >= 0 && // game is ongoing
       params.yourPlayerIndex === params.turnIndexAfterMove; // it's my turn
@@ -291,7 +285,7 @@ module game {
   }
   function rotateGameBoard(params: IUpdateUI){
     console.log(currentPlayMode);
-    if (params.playMode !== "single-player" && params.playMode !== "playAgainstTheComputer"){
+    if (params.playMode !== "playAgainstTheComputer"){
       let gameBoard = document.getElementById("gameArea");
       switch (params.yourPlayerIndex){
         case 0 : console.log("White player"); gameBoard.className = "rotateW"; invertRow = false;
@@ -299,7 +293,13 @@ module game {
           for(var j = 0; j < gameLogic.COLS; j++) {
             let draggingPiece = document.getElementById(i + '_' + j);
             let curPiece: piece = params.stateAfterMove.board[i][j];
-              draggingPiece.className = "";
+            draggingPiece.className = "";
+              /*if(curPiece.color != "black") {
+                draggingPiece.className = "";
+              }
+              else {
+                draggingPiece.className = "TFL";
+              }*/
           }
         }break;
         case 1 : console.log("Black player"); gameBoard.className = "rotateB"; invertRow = true;
@@ -391,12 +391,11 @@ module game {
       let cell = state.board[row][col];
       return cell.name !== "";
     }
-  export function showImage(row: number, col: number){//: string {
+  export function showImage(row: number, col: number, playerIndex: number): string{
     let cell = state.board[row][col];
     let imageValue: number = cell.value;
     let gameBoard = document.getElementById("gameArea");
     let draggingPiece = document.getElementById(row + '_' + col);
-
     if(turnIndex === 0 ||currentPlayMode==="playAgainstTheComputer") { //white's turn or cpu game = keep black's pieces hidden
       if(cell.color === "black") {
         //code for black pieces
@@ -410,6 +409,28 @@ module game {
           imageValue = 31;
 
     }
+    //console.log("My index is", playerIndex);
+    /*if (currentPlayMode==="playAgainstTheComputer") {
+      if(playerIndex === 1) {
+        imageValue = 31;
+      }
+      else if (playerIndex === 0){
+        imageValue = 32;
+      }
+    }
+    else*/ /*if(playerIndex === 0) { //white's turn or cpu game = keep black's pieces hidden
+      if(cell.color === "black") {
+        //code for black pieces
+        //draggingPiece.className = "black";
+        imageValue = 32;
+      }
+    }
+    else if(playerIndex === 1 && cell.color === "white") {
+          //code for white pieces
+          //draggingPiece.className = "white";
+          imageValue = 31;
+
+    }*/
     /*if(invertRow === true && cell.value >=16 && cell.value <=30) { //black's turn, so make active pieces black
       draggingPiece.className = "TFL";
       //draggingPiece.className = "invert";
@@ -417,6 +438,23 @@ module game {
     return getPiece(imageValue);
   }
 
+  export function revealPiecesEndGame(board: Board) {
+    for(var i = 0; i < gameLogic.ROWS; i++) {
+      for(var j = 0; j < gameLogic.COLS; j++) {
+        let draggingPiece = document.getElementById(i + '_' + j);
+        let curPiece: piece = board[i][j];
+        if(curPiece.color === "black") {
+          if(currentPlayMode == "playAgainstTheComputer") {
+            draggingPiece.className = getPieceByPosition(i, j);
+            //console.log(draggingPiece.className);
+          }
+          else {
+            draggingPiece.className = "TFL";
+          }
+        }
+      }
+    }
+  }
   function getPiece(piece: number): string {
     //return gameLogic.getPieceName(piece);
     if(piece >= 16 && piece <= 30) {
@@ -427,11 +465,11 @@ module game {
   function getPieceByPosition(row: number, col: number): string {
     return gameLogic.getPieceName(state.board[row][col].value);
   }
-  /*export function shouldSlowlyAppear(row: number, col: number): boolean {
+  export function shouldSlowlyAppear(row: number, col: number): boolean {
     return !animationEnded &&
         state.delta &&
         state.delta.row === row && state.delta.col === col;
-  }*/
+  }
 }
 
 angular.module('myApp', ['ngTouch', 'ui.bootstrap', 'gameServices'])
