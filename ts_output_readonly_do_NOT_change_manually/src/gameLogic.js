@@ -565,7 +565,9 @@ var gameLogic;
             //let board = stateBeforeMove.board;
             //showBoardConsole(stateBeforeMove.board);
             //console.log("is this the call?");
+            console.error(JSON.stringify(move));
             var expectedMove = createMove(board, turnIndexBeforeMove, deltaFrom, deltaTo);
+            console.error(JSON.stringify(expectedMove));
             console.log(turnIndexBeforeMove, deltaFrom, deltaTo);
             if (!angular.equals(move, expectedMove)) {
                 console.log("fails");
@@ -577,6 +579,7 @@ var gameLogic;
             console.log("throws");
             return false;
         }
+        console.log("No issues with move");
         return true;
     }
     gameLogic.isMoveOk = isMoveOk;

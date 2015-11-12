@@ -285,6 +285,7 @@ module game {
   }
   function rotateGameBoard(params: IUpdateUI){
     console.log(currentPlayMode);
+    //if(params.playersInfo[params.yourPlayerIndex].playerId === '') return;
     if (params.playMode !== "playAgainstTheComputer"){
       let gameBoard = document.getElementById("gameArea");
       switch (params.yourPlayerIndex){
@@ -396,7 +397,15 @@ module game {
     let imageValue: number = cell.value;
     let gameBoard = document.getElementById("gameArea");
     let draggingPiece = document.getElementById(row + '_' + col);
-    if(turnIndex === 0 ||currentPlayMode==="playAgainstTheComputer") { //white's turn or cpu game = keep black's pieces hidden
+    /*if (currentPlayMode==="playAgainstTheComputer") {
+      if(cell.color === "black") {
+        return getPiece(32);
+      }
+      else if(cell.color === "white" && playerIndex === 0) {
+        //return getPiece(31);
+      }
+    }*/
+    if(turnIndex === 0 ||(currentPlayMode==="playAgainstTheComputer")) { //white's turn or cpu game = keep black's pieces hidden
       if(cell.color === "black") {
         //code for black pieces
         //draggingPiece.className = "black";

@@ -249,6 +249,7 @@ var game;
     }
     function rotateGameBoard(params) {
         console.log(game.currentPlayMode);
+        //if(params.playersInfo[params.yourPlayerIndex].playerId === '') return;
         if (params.playMode !== "playAgainstTheComputer") {
             var gameBoard = document.getElementById("gameArea");
             switch (params.yourPlayerIndex) {
@@ -362,7 +363,15 @@ var game;
         var imageValue = cell.value;
         var gameBoard = document.getElementById("gameArea");
         var draggingPiece = document.getElementById(row + '_' + col);
-        if (turnIndex === 0 || game.currentPlayMode === "playAgainstTheComputer") {
+        /*if (currentPlayMode==="playAgainstTheComputer") {
+          if(cell.color === "black") {
+            return getPiece(32);
+          }
+          else if(cell.color === "white" && playerIndex === 0) {
+            //return getPiece(31);
+          }
+        }*/
+        if (turnIndex === 0 || (game.currentPlayMode === "playAgainstTheComputer")) {
             if (cell.color === "black") {
                 //code for black pieces
                 //draggingPiece.className = "black";

@@ -590,7 +590,9 @@ module gameLogic {
       //let board = stateBeforeMove.board;
       //showBoardConsole(stateBeforeMove.board);
       //console.log("is this the call?");
+      console.error(JSON.stringify(move));
       let expectedMove = createMove(board, turnIndexBeforeMove, deltaFrom, deltaTo);
+      console.error(JSON.stringify(expectedMove));
       console.log(turnIndexBeforeMove, deltaFrom, deltaTo);
       if (!angular.equals(move, expectedMove)) {
         console.log("fails");
@@ -601,6 +603,7 @@ module gameLogic {
       console.log("throws");
       return false;
     }
+    console.log("No issues with move");
     return true;
   }
 }
