@@ -1,0 +1,4 @@
+Game of the Generals uses information collected to match users with their friends within the game. Your 
+Facebook icon and name are visible to other users of the application. 
+
+In this application, we have no desire to user any information beyond the needs of the game itself.
