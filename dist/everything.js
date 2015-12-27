@@ -838,7 +838,7 @@ var gameLogic;
         //rotate gameboard if needed
         rotateBoard = game.currentPlayMode === 1;
         console.log("flip: " + rotateBoard);
-        //rotateGameBoard(params, rotateBoard);
+        rotateGameBoard(params);
     }
     function shouldRotate() {
         return rotateBoard;
@@ -880,7 +880,7 @@ var gameLogic;
           break;
         }
     }*/
-    function rotateGameBoard(params, rotateBoard) {
+    function rotateGameBoard(params) {
         console.log(game.currentPlayMode);
         //if(params.playersInfo[params.yourPlayerIndex].playerId === '') return;
         if (shouldRotate() == true) {

@@ -288,7 +288,7 @@ module game {
     //rotate gameboard if needed
      rotateBoard = currentPlayMode === 1;
      console.log("flip: " + rotateBoard);
-     //rotateGameBoard(params, rotateBoard);
+     rotateGameBoard(params);
   }
 
   export function shouldRotate() {
@@ -330,7 +330,7 @@ module game {
         break;
       }
   }*/
-  function rotateGameBoard(params: IUpdateUI, rotateBoard: boolean){
+  function rotateGameBoard(params: IUpdateUI){
     console.log(currentPlayMode);
     //if(params.playersInfo[params.yourPlayerIndex].playerId === '') return;
     if (shouldRotate() == true){
