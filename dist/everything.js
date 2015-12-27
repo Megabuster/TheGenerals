@@ -231,6 +231,7 @@ var gameLogic;
         }
         //firstOperation.push({setTurn: {turnIndex: 0}});
         firstOperation.push({ set: { key: 'board', value: board } });
+        //firstOperation.push(setVisibilities);
         return firstOperation.concat(addVisibilities);
     }
     gameLogic.getInitialMove = getInitialMove;
@@ -565,9 +566,9 @@ var gameLogic;
             //let board = stateBeforeMove.board;
             //showBoardConsole(stateBeforeMove.board);
             //console.log("is this the call?");
-            console.error(JSON.stringify(move));
+            //console.error(JSON.stringify(move));
             var expectedMove = createMove(board, turnIndexBeforeMove, deltaFrom, deltaTo);
-            console.error(JSON.stringify(expectedMove));
+            //console.error(JSON.stringify(expectedMove));
             console.log(turnIndexBeforeMove, deltaFrom, deltaTo);
             if (!angular.equals(move, expectedMove)) {
                 console.log("fails");
@@ -608,6 +609,7 @@ var gameLogic;
     var nextZIndex = 29;
     var invertRow = false;
     var possibleMoves;
+    var rotateBoard = false;
     function init() {
         console.log("Translation of 'RULES_OF_GENERALS' is " + translate('RULES_OF_GENERALS'));
         resizeGameAreaService.setWidthToHeight(1);
@@ -810,9 +812,10 @@ var gameLogic;
         }
         if (!state.board) {
             state.board = gameLogic.getInitialBoard();
-            var move = gameLogic.getInitialMove(state.board);
         }
-        rotateGameBoard(params);
+        /*if(params.yourPlayerIndex === 1) {
+          rotateGameBoard(params);
+        }*/
         canMakeMove = params.turnIndexAfterMove >= 0 &&
             params.yourPlayerIndex === params.turnIndexAfterMove; // it's my turn
         turnIndex = params.turnIndexAfterMove;
@@ -832,11 +835,55 @@ var gameLogic;
                 sendComputerMove();
             }
         }
+        //rotate gameboard if needed
+        rotateBoard = game.currentPlayMode === 1;
+        console.log("flip: " + rotateBoard);
+        //rotateGameBoard(params, rotateBoard);
     }
-    function rotateGameBoard(params) {
+    function shouldRotate() {
+        return rotateBoard;
+    }
+    game.shouldRotate = shouldRotate;
+    /*function rotateGameBoard(params: IUpdateUI, rotateBoard: boolean){
+      console.log(currentPlayMode);
+      //if(params.playersInfo[params.yourPlayerIndex].playerId === '') return;
+      let playModeInt: number;
+      if(rotateBoard === true) {
+        playModeInt = 1;
+      }
+      else {
+        playModeInt = 0;
+      }
+        let gameBoard = document.getElementById("gameArea");
+        switch (playModeInt){
+          case 0 : console.log("White player");
+          gameBoard.className = "rotateW";
+          invertRow = false;
+          for(var i = 0; i < gameLogic.ROWS; i++) {
+            for(var j = 0; j < gameLogic.COLS; j++) {
+              let draggingPiece = document.getElementById(i + '_' + j);
+              console.log(JSON.stringify(draggingPiece));
+              let curPiece: piece = params.stateAfterMove.board[i][j];
+              //draggingPiece.className = "";
+            }
+          }break;
+          case 1 : console.log("Black player"); gameBoard.className = "rotateB"; invertRow = true;
+          for(var i = 0; i < gameLogic.ROWS; i++) {
+            for(var j = 0; j < gameLogic.COLS; j++) {
+              let draggingPiece = document.getElementById(i + '_' + j);
+              let curPiece: piece = params.stateAfterMove.board[i][j];
+              if(curPiece.color === "black") {
+                draggingPiece.className = "TFL";
+              }
+            }
+          }
+          break;
+        }
+    }*/
+    function rotateGameBoard(params, rotateBoard) {
         console.log(game.currentPlayMode);
         //if(params.playersInfo[params.yourPlayerIndex].playerId === '') return;
-        if (params.playMode !== "playAgainstTheComputer") {
+        if (shouldRotate() == true) {
             var gameBoard = document.getElementById("gameArea");
             switch (params.yourPlayerIndex) {
                 case 0:
@@ -860,7 +907,7 @@ var gameLogic;
                             var draggingPiece_2 = document.getElementById(i + '_' + j);
                             var curPiece = params.stateAfterMove.board[i][j];
                             if (curPiece.color === "black") {
-                                draggingPiece_2.className = "TFL";
+                                draggingPiece_2.className = "rotateB";
                             }
                         }
                     }
@@ -944,60 +991,67 @@ var gameLogic;
         return cell.name !== "";
     }
     game.shouldShowImage = shouldShowImage;
-    function showImage(row, col, playerIndex) {
+    function showImage(row, col, playerIndex, rotateBoard) {
         var cell = state.board[row][col];
         var imageValue = cell.value;
         var gameBoard = document.getElementById("gameArea");
         var draggingPiece = document.getElementById(row + '_' + col);
-        /*if (currentPlayMode==="playAgainstTheComputer") {
-          if(cell.color === "black") {
-            return getPiece(32);
-          }
-          else if(cell.color === "white" && playerIndex === 0) {
-            //return getPiece(31);
-          }
-        }*/
-        if (turnIndex === 0 || (game.currentPlayMode === "playAgainstTheComputer")) {
+        //true = it is multiplayer mode, otherwise it'll just run the plain images
+        if (shouldRotate() == true) {
+            if (playerIndex == 0) {
+                if (cell.color === "black") {
+                    //code for black pieces (fog)
+                    //draggingPiece.className = "black";
+                    imageValue = 32;
+                }
+            }
+            else {
+                if (cell.color === "white") {
+                    //code for white's pieces (fog)
+                    //draggingPiece.className = "black";
+                    imageValue = 32;
+                }
+            }
+        }
+        else {
             if (cell.color === "black") {
-                //code for black pieces
+                //code for black pieces (fog)
                 //draggingPiece.className = "black";
                 imageValue = 32;
             }
         }
-        else if (turnIndex === 1 && cell.color === "white") {
-            //code for white pieces
-            //draggingPiece.className = "white";
-            imageValue = 31;
-        }
-        //console.log("My index is", playerIndex);
-        /*if (currentPlayMode==="playAgainstTheComputer") {
-          if(playerIndex === 1) {
-            imageValue = 31;
-          }
-          else if (playerIndex === 0){
-            imageValue = 32;
-          }
-        }
-        else*/ /*if(playerIndex === 0) { //white's turn or cpu game = keep black's pieces hidden
-          if(cell.color === "black") {
-            //code for black pieces
-            //draggingPiece.className = "black";
-            imageValue = 32;
-          }
-        }
-        else if(playerIndex === 1 && cell.color === "white") {
-              //code for white pieces
-              //draggingPiece.className = "white";
-              imageValue = 31;
-    
-        }*/
-        /*if(invertRow === true && cell.value >=16 && cell.value <=30) { //black's turn, so make active pieces black
-          draggingPiece.className = "TFL";
-          //draggingPiece.className = "invert";
-        }*/
         return getPiece(imageValue);
     }
     game.showImage = showImage;
+    /*export function showImage(row: number, col: number, playerIndex: number): string{
+      let cell = state.board[row][col];
+      let imageValue: number = cell.value;
+      let gameBoard = document.getElementById("gameArea");
+      let draggingPiece = document.getElementById(row + '_' + col);
+  
+      if(turnIndex === 0 ||(currentPlayMode==="playAgainstTheComputer")) { //white's turn or cpu game = keep black's pieces hidden
+        if(cell.color === "black") {
+          //code for black pieces
+          //draggingPiece.className = "black";
+          imageValue = 32;
+        }
+      }
+      else if(turnIndex === 1 && cell.color === "white") {
+            //code for white pieces
+            //draggingPiece.className = "white";
+            imageValue = 31;
+  
+      }
+      return getPiece(imageValue);
+    }*/
+    /*export function showImage(row: number, col: number, playerIndex: number): string{
+      let cell = state.board[row][col];
+      let imageValue: number = cell.value;
+      let gameBoard = document.getElementById("gameArea");
+      let draggingPiece = document.getElementById(row + '_' + col);
+  
+      return getPiece(imageValue);
+    }*/
     function revealPiecesEndGame(board) {
         for (var i = 0; i < gameLogic.ROWS; i++) {
             for (var j = 0; j < gameLogic.COLS; j++) {

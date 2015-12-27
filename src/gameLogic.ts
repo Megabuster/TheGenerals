@@ -250,6 +250,7 @@ module gameLogic {
 
       //firstOperation.push({setTurn: {turnIndex: 0}});
       firstOperation.push({set: {key: 'board', value: board}});
+      //firstOperation.push(setVisibilities);
       return firstOperation.concat(addVisibilities);
   }
 
@@ -590,9 +591,9 @@ module gameLogic {
       //let board = stateBeforeMove.board;
       //showBoardConsole(stateBeforeMove.board);
       //console.log("is this the call?");
-      console.error(JSON.stringify(move));
+      //console.error(JSON.stringify(move));
       let expectedMove = createMove(board, turnIndexBeforeMove, deltaFrom, deltaTo);
-      console.error(JSON.stringify(expectedMove));
+      //console.error(JSON.stringify(expectedMove));
       console.log(turnIndexBeforeMove, deltaFrom, deltaTo);
       if (!angular.equals(move, expectedMove)) {
         console.log("fails");
