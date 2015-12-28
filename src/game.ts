@@ -258,10 +258,10 @@ module game {
 
     if (!state.board) {
       if (gameLogic.moveMade == true) {
-        state.board = gameLogic.initialBoard;
+        state.board = angular.copy(gameLogic.lastBoard);
       }
       else {
-        state.board = gameLogic.getInitialBoard();
+        state.board = angular.copy(gameLogic.getInitialBoard());
       }
       //let move = gameLogic.getInitialMove(state.board);
     }

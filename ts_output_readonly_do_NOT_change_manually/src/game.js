@@ -225,10 +225,10 @@ var game;
         }
         if (!state.board) {
             if (gameLogic.moveMade == true) {
-                state.board = gameLogic.initialBoard;
+                state.board = angular.copy(gameLogic.lastBoard);
             }
             else {
-                state.board = gameLogic.getInitialBoard();
+                state.board = angular.copy(gameLogic.getInitialBoard());
             }
         }
         /*if(params.yourPlayerIndex === 1) {

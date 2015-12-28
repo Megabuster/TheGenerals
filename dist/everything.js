@@ -22,7 +22,7 @@ var gameLogic;
 (function (gameLogic) {
     gameLogic.ROWS = 8;
     gameLogic.COLS = 9;
-    gameLogic.initialBoard = [];
+    gameLogic.lastBoard = [];
     gameLogic.moveMade = false;
     function winningPiece(attacker, attacked) {
         //console.log(attacker, attacked);
@@ -197,7 +197,7 @@ var gameLogic;
  */
         //let visibilites: ISetVisibility[];// = {key: "white", visibleToPlayerIndexes: [1]};
         board = setupInitialBoard(board);
-        gameLogic.initialBoard = board;
+        gameLogic.lastBoard = board;
         gameLogic.moveMade = true;
         return board;
         //return setupInitialBoard(board);
@@ -506,8 +506,14 @@ var gameLogic;
         if (!board) {
             console.log("building board from createMove");
             // Initially (at the beginning of the match), the board in state is undefined.
-            board = gameLogic.initialBoard;
-            initialMove = getInitialMove(board);
+            if (gameLogic.moveMade == true) {
+                board = angular.copy(gameLogic.lastBoard);
+            }
+            else {
+                gameLogic.lastBoard = angular.copy(getInitialBoard());
+                gameLogic.moveMade = true;
+            }
+            initialMove = angular.copy(getInitialMove(board));
             console.log("Created initial move");
         }
         checkLegalMove(board, turnIndexBeforeMove, deltaFrom, deltaTo);
@@ -817,10 +823,10 @@ var gameLogic;
         }
         if (!state.board) {
             if (gameLogic.moveMade == true) {
-                state.board = gameLogic.initialBoard;
+                state.board = angular.copy(gameLogic.lastBoard);
             }
             else {
-                state.board = gameLogic.getInitialBoard();
+                state.board = angular.copy(gameLogic.getInitialBoard());
             }
         }
         /*if(params.yourPlayerIndex === 1) {

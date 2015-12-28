@@ -40,7 +40,7 @@ module gameLogic {
 
   export const ROWS = 8;
   export const COLS = 9;
-  export let initialBoard: Board = [];
+  export let lastBoard: Board = [];
   export let moveMade: boolean = false;
   export function winningPiece(attacker: number, attacked: number) {
     //console.log(attacker, attacked);
@@ -214,7 +214,7 @@ module gameLogic {
 */
        //let visibilites: ISetVisibility[];// = {key: "white", visibleToPlayerIndexes: [1]};
        board = setupInitialBoard(board);
-       initialBoard = board;
+       lastBoard = board;
        moveMade = true;
        return board;
        //return setupInitialBoard(board);
@@ -525,8 +525,15 @@ module gameLogic {
     if (!board) {
       console.log("building board from createMove");
       // Initially (at the beginning of the match), the board in state is undefined.
-      board = initialBoard;
-      initialMove = getInitialMove(board);
+      if(moveMade == true) {
+        board = angular.copy(lastBoard);
+      }
+      else {
+        lastBoard = angular.copy(getInitialBoard());
+        moveMade = true;
+      }
+
+      initialMove = angular.copy(getInitialMove(board));
       console.log("Created initial move");
     }
     checkLegalMove(board, turnIndexBeforeMove, deltaFrom, deltaTo);
