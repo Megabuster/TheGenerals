@@ -252,9 +252,9 @@ module game {
 
     currentPlayMode = params.playMode;
 
-    if(params.turnIndexAfterMove<0) {
+    /*if(params.turnIndexAfterMove<0) {
       revealPiecesEndGame(state.board);
-    }
+    }*/
 
     if (!state.board) {
       if (gameLogic.moveMade == true) {
@@ -504,7 +504,7 @@ module game {
 
     return getPiece(imageValue);
   }*/
-  export function revealPiecesEndGame(board: Board) {
+  /*export function revealPiecesEndGame(board: Board) {
     for(var i = 0; i < gameLogic.ROWS; i++) {
       for(var j = 0; j < gameLogic.COLS; j++) {
         let draggingPiece = document.getElementById(i + '_' + j);
@@ -520,7 +520,7 @@ module game {
         }
       }
     }
-  }
+  }*/
   function getPiece(piece: number): string {
     //return gameLogic.getPieceName(piece);
     if(piece >= 16 && piece <= 30) {

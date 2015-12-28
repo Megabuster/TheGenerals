@@ -819,9 +819,9 @@ var gameLogic;
         state = params.stateAfterMove;
         game.yourPlayerIndex = params.yourPlayerIndex;
         game.currentPlayMode = params.playMode;
-        if (params.turnIndexAfterMove < 0) {
-            revealPiecesEndGame(state.board);
-        }
+        /*if(params.turnIndexAfterMove<0) {
+          revealPiecesEndGame(state.board);
+        }*/
         if (!state.board) {
             if (gameLogic.moveMade == true) {
                 state.board = angular.copy(gameLogic.lastBoard);
@@ -1069,23 +1069,23 @@ var gameLogic;
   
       return getPiece(imageValue);
     }*/
-    function revealPiecesEndGame(board) {
-        for (var i = 0; i < gameLogic.ROWS; i++) {
-            for (var j = 0; j < gameLogic.COLS; j++) {
-                var draggingPiece_3 = document.getElementById(i + '_' + j);
-                var curPiece = board[i][j];
-                if (curPiece.color === "black") {
-                    if (game.currentPlayMode == "playAgainstTheComputer") {
-                        draggingPiece_3.className = getPieceByPosition(i, j);
-                    }
-                    else {
-                        draggingPiece_3.className = "TFL";
-                    }
-                }
+    /*export function revealPiecesEndGame(board: Board) {
+      for(var i = 0; i < gameLogic.ROWS; i++) {
+        for(var j = 0; j < gameLogic.COLS; j++) {
+          let draggingPiece = document.getElementById(i + '_' + j);
+          let curPiece: piece = board[i][j];
+          if(curPiece.color === "black") {
+            if(currentPlayMode == "playAgainstTheComputer") {
+              draggingPiece.className = getPieceByPosition(i, j);
+              //console.log(draggingPiece.className);
             }
+            else {
+              draggingPiece.className = "TFL";
+            }
+          }
         }
-    }
-    game.revealPiecesEndGame = revealPiecesEndGame;
+      }
+    }*/
     function getPiece(piece) {
         //return gameLogic.getPieceName(piece);
         if (piece >= 16 && piece <= 30) {
