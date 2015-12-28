@@ -224,7 +224,12 @@ var game;
             revealPiecesEndGame(state.board);
         }
         if (!state.board) {
-            state.board = gameLogic.getInitialBoard();
+            if (gameLogic.moveMade == true) {
+                state.board = gameLogic.initialBoard;
+            }
+            else {
+                state.board = gameLogic.getInitialBoard();
+            }
         }
         /*if(params.yourPlayerIndex === 1) {
           rotateGameBoard(params);

@@ -257,7 +257,12 @@ module game {
     }
 
     if (!state.board) {
-      state.board = gameLogic.getInitialBoard();
+      if (gameLogic.moveMade == true) {
+        state.board = gameLogic.initialBoard;
+      }
+      else {
+        state.board = gameLogic.getInitialBoard();
+      }
       //let move = gameLogic.getInitialMove(state.board);
     }
 

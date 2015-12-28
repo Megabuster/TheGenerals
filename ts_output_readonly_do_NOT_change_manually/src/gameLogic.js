@@ -22,16 +22,16 @@ var gameLogic;
 (function (gameLogic) {
     gameLogic.ROWS = 8;
     gameLogic.COLS = 9;
+    gameLogic.initialBoard = [];
+    gameLogic.moveMade = false;
     function winningPiece(attacker, attacked) {
         //console.log(attacker, attacked);
         var attackerColor = getPieceColor(attacker);
         var attackedColor = getPieceColor(attacked);
         if (attacker === 1 && attacked === 16) {
-            //console.log("Returning", 1);
             return 1;
         }
         else if (attacker === 16 && attacked === 1) {
-            //console.log("Returning", 16);
             return 16;
         }
         if (attacker > 15) {
@@ -41,16 +41,13 @@ var gameLogic;
             attacked -= 15;
         }
         if (attacker === attacked) {
-            //console.log("Returning", 0);
             return 0;
         }
         if ((attacker === 2 && attacked === 15)) {
             if (attackerColor === "white") {
-                //console.log("Returning", 2);
                 return 2;
             }
             else {
-                //console.log("Returning", 17);
                 return 17;
             }
         }
@@ -201,6 +198,7 @@ var gameLogic;
         //let visibilites: ISetVisibility[];// = {key: "white", visibleToPlayerIndexes: [1]};
         board = setupInitialBoard(board);
         gameLogic.initialBoard = board;
+        gameLogic.moveMade = true;
         return board;
         //return setupInitialBoard(board);
     }

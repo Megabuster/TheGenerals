@@ -40,18 +40,17 @@ module gameLogic {
 
   export const ROWS = 8;
   export const COLS = 9;
-  export let initialBoard: Board;
+  export let initialBoard: Board = [];
+  export let moveMade: boolean = false;
   export function winningPiece(attacker: number, attacked: number) {
     //console.log(attacker, attacked);
     let attackerColor: string = getPieceColor(attacker);
     let attackedColor: string = getPieceColor(attacked);
 
     if(attacker===1&&attacked===16) {
-      //console.log("Returning", 1);
       return 1;
     }
     else if(attacker===16&&attacked===1) {
-      //console.log("Returning", 16);
       return 16;
     }
     if(attacker > 15) {
@@ -61,16 +60,13 @@ module gameLogic {
       attacked-=15;
     }
     if(attacker === attacked) {
-      //console.log("Returning", 0);
       return 0;
     }
     if((attacker === 2 && attacked === 15)) {
       if(attackerColor === "white") {
-        //console.log("Returning", 2);
         return 2;
       }
       else {
-        //console.log("Returning", 17);
         return 17;
       }
     }
@@ -219,6 +215,7 @@ module gameLogic {
        //let visibilites: ISetVisibility[];// = {key: "white", visibleToPlayerIndexes: [1]};
        board = setupInitialBoard(board);
        initialBoard = board;
+       moveMade = true;
        return board;
        //return setupInitialBoard(board);
   }
