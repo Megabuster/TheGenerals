@@ -595,6 +595,9 @@ module gameLogic {
       console.log(turnIndexBeforeMove, deltaFrom, deltaTo);
       if (!angular.equals(move, expectedMove)) {
         console.log("fails");
+        console.log(JSON.stringify(move));
+        console.log("Expected this instead:");
+        console.log(JSON.stringify(expectedMove));
         return false;
       }
     } catch (e) {
